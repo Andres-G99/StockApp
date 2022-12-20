@@ -3,14 +3,14 @@ from tkinter import ttk
 
 from GUI.cantidad_window import *
 from BBDD.connect_bbdd import *
-from Controller.app_functions import crear_tabla
+from Controller.app_functions import crear_tabla, get_tabla
 from GUI.add_prod_window import add_prod_window
 from Controller.app_functions import add_item, remove_record
 
 class main_window():
     def __init__(self):
         root = Tk()
-
+        root.state('zoomed')
         root.title("StockApp")
         
         w = root.winfo_screenwidth()
@@ -25,9 +25,9 @@ class main_window():
         bottom_frame.pack(expand=True, side='bottom', fill=BOTH)
         bottom_frame.config(background="#80d8ff")
 
-        butt_modif = Button(bottom_frame, text="Modificar", width=20, bg= "#E6E2C3", bd= 1, font="Sans-serif", )
-        butt_add_u = Button(bottom_frame, text="Agregar unidad", width=20, bg= "#E6E2C3", bd= 1, font="Sans-serif")
-        butt_elim_u = Button(bottom_frame, text="Eliminar unidad", width=20, bg= "#E6E2C3", bd= 1, font="Sans-serif")
+        butt_modif = Button(bottom_frame, text="Modificar", width=15, bg= "#E6E2C3", bd= 1, font="Sans-serif", )
+        butt_add_u = Button(bottom_frame, text="Agregar unidad", width=15, bg= "#E6E2C3", bd= 1, font="Sans-serif")
+        butt_elim_u = Button(bottom_frame, text="Eliminar unidad", width=15, bg= "#E6E2C3", bd= 1, font="Sans-serif")
         butt_add_elim_cant = Button(bottom_frame, text="Agregar/Eliminar cantidad", width=20, bg= "#E6E2C3", bd= 1, font="Sans-serif")
 
         butt_modif.place(x= (w*0.2), y= (30))
@@ -44,7 +44,7 @@ class main_window():
         butt_add_prod = Button(left_frame, text="Agregar Producto", width= 20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command= self.new_addw)
         butt_add_prod.place(x= (((w*0.2)/2) - 80), y= (40))  # p = x/2 - l
 
-        butt_elim_prod = Button(left_frame, text="Eliminar Producto", width= 20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command=remove_record)
+        butt_elim_prod = Button(left_frame, text="Eliminar Producto", width= 20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command=self.eliminar_registro)
         butt_elim_prod.place(x= (((w*0.2)/2) - 80), y=(100))
 
         lista_param = ttk.Combobox(left_frame, width= 30, values=["Todos","Por nombre", "Por código", "Por precio"])
@@ -76,8 +76,7 @@ class main_window():
     def new_addw(self):
         m = add_prod_window(self.update)
 
-    def update_tabla(self):
-        print("Update tabla")
-        global right_frame
-        self.frame = right_frame
-        #crear_tabla(right_frame)
+    
+    def eliminar_registro(self):
+        remove_record()
+        crear_tabla(right_frame)

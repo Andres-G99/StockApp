@@ -40,7 +40,7 @@ class add_prod_window():
         e5 = Entry(self.frame, width= 30, textvariable=self.porc_ag)
         e5.pack()
 
-        b = Button(self.frame, text="Agregar producto", width=30, bg= "#E6E2C3", bd= 1, font="Sans-serif", command= self.enviar_datos)
+        b = Button(self.frame, text="Agregar producto", width=20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command= self.enviar_datos)
         #        b = Button(self.frame, text="Agregar producto", width=30, bg= "#E6E2C3", bd= 1, font="Sans-serif", command= self.enviar_datos(self.code, self.name, self.cantidad, self.prec_u, self.porc_ag))
         b.pack(pady=20)
 

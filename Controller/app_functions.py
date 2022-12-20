@@ -14,7 +14,15 @@ def add_item(codigo, nombre, cantidad, precio_unit, porcent_ag):
 
 def crear_tabla(frame):
     global tabla
-    tabla = ttk.Treeview(frame, height=150)
+
+    #Scroll
+    sb = Scrollbar(frame)
+    sb.pack(side=RIGHT, fill=Y)
+
+    tabla = ttk.Treeview(frame, height=150, yscrollcommand=sb.set)
+    tabla.pack(padx=0)
+
+    sb.config(command=tabla.yview)
     tabla['columns'] = ("Codigo", "Nombre", "Cantidad", "Precio unitario", "% Agregado", "Precio final")
 
 
@@ -34,22 +42,32 @@ def crear_tabla(frame):
     tabla.heading("% Agregado", text="% Agregado")
     tabla.heading("Precio final", text="Precio final")
 
-    #tabla.insert(parent='', index='end', values=("ee648", "Maquina del mal", 2,4,5,6))
     
     global count, datos
     datos = get_datos()
     count = 0
 
+    tabla.tag_configure('impar', background = "white")
+    tabla.tag_configure('par', background = "lightblue")
+
     for i in range(len(datos)):
-        tabla.insert(parent='', index='end', id= count, values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6]))
+        if count % 2 == 0:
+            tabla.insert(parent='', index='end', id= count, values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6]), tag = "par")
+        else:
+            tabla.insert(parent='', index='end', id= count, values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6]), tag = "impar")
         count += 1
 
-    tabla.pack(padx=0)
+    
 
 def add_record(dato):
     global count
-    tabla.insert(parent='', index='end', id= count, values=(dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]))
+    if count % 2 == 0:
+        tabla.insert(parent='', index='end', id= count, values=(dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "par")
+    else:
+        tabla.insert(parent='', index='end', id= count, values=(dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "impar")
     count += 1
+    update_data()
+
 
 def remove_record():
     del_item = tabla.selection()[0]
@@ -57,11 +75,15 @@ def remove_record():
     code = dato[0]
     eliminar_articulo(code)
     tabla.delete(del_item)
+    tabla.destroy()
+
     
+def update_data():
+    global datos
+    datos = get_datos()
 
-
-
-
+def get_tabla():
+    return tabla
 
 '''
 def crear_tabla(frame):
