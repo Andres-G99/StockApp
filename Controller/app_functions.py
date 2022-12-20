@@ -7,6 +7,61 @@ from BBDD.connect_bbdd import *
 def add_item(codigo, nombre, cantidad, precio_unit, porcent_ag):
     precio_final = float(precio_unit + (precio_unit * (porcent_ag/100)))
     insertar_articulo(codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final)
+    dato = (codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final)
+    add_record(dato)
+
+
+
+def crear_tabla(frame):
+    global tabla
+    tabla = ttk.Treeview(frame, height=150)
+    tabla['columns'] = ("Codigo", "Nombre", "Cantidad", "Precio unitario", "% Agregado", "Precio final")
+
+
+    tabla.column("#0", width=1, stretch = NO)
+    tabla.column("Codigo", width=200, minwidth= 190)
+    tabla.column("Nombre", width=300, minwidth= 290)
+    tabla.column("Cantidad", width=170, minwidth= 160)
+    tabla.column("Precio unitario", width=170, minwidth= 160)
+    tabla.column("% Agregado", width=170, minwidth= 160)  
+    tabla.column("Precio final", width=170, minwidth= 160)
+
+    tabla.heading("#0", text="")
+    tabla.heading("Codigo", text="Código")
+    tabla.heading("Nombre", text="Nombre")
+    tabla.heading("Cantidad", text="Cantidad")
+    tabla.heading("Precio unitario", text="Precio unitario")
+    tabla.heading("% Agregado", text="% Agregado")
+    tabla.heading("Precio final", text="Precio final")
+
+    #tabla.insert(parent='', index='end', values=("ee648", "Maquina del mal", 2,4,5,6))
+    
+    global count, datos
+    datos = get_datos()
+    count = 0
+
+    for i in range(len(datos)):
+        tabla.insert(parent='', index='end', id= count, values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6]))
+        count += 1
+
+    tabla.pack(padx=0)
+
+def add_record(dato):
+    global count
+    tabla.insert(parent='', index='end', id= count, values=(dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]))
+    count += 1
+
+def remove_record():
+    del_item = tabla.selection()[0]
+    dato = datos[int(del_item)]
+    code = dato[0]
+    eliminar_articulo(code)
+    tabla.delete(del_item)
+    
+
+
+
+
 
 '''
 def crear_tabla(frame):
@@ -50,25 +105,3 @@ def crear_tabla(frame):
                 #e.insert(END, datos[i])
                 e.insert(END, datos[i][j])
 '''
-
-def crear_tabla(frame):
-    tabla = ttk.Treeview(frame)
-    tabla['columns'] = ("Codigo", "Nombre", "Cantidad", "Precio unitario", "% Agregado", "Precio final")
-
-    tabla.column("#0", anchor = W, width=30, minwidth= 25)
-    tabla.column("Nombre", width=120, minwidth= 25)
-    tabla.column("Cantidad", width=15, minwidth= 10)
-    tabla.column("Precio unitario", width=15, minwidth= 10)
-    tabla.column("% Agregado", width=15, minwidth= 10)  
-    tabla.column("Precio final", width=15, minwidth= 10)
-
-    tabla.heading("#0", text="Código", anchor = W)
-    tabla.heading("Nombre", text="Nombre")
-    tabla.heading("Cantidad", text="Cantidad")
-    tabla.heading("Precio unitario", text="Precio unitario")
-    tabla.heading("% Agregado", text="% Agregado")
-    tabla.heading("Precio final", text="Precio final")
-
-    tabla.insert(parent='', index='end', text= "Padre", values=("ee648", "Mauina del mal", 2,4,5,6))
-
-    tabla.pack()

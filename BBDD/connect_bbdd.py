@@ -28,12 +28,12 @@ def insertar_articulo(codigo, nombre, cantidad, precio_unit, porcent_ag, precio_
     messagebox.showinfo("Éxito","Articulo guardado correctamente!")
     #ACTUALIZAR TABLA----------------------------------------------------------------------
 
-def eliminar_articulo(codigo):
+def eliminar_articulo(id):
     conex = sqlite3.connect("BBDD/stockBBDD.db")
     cursor = conex.cursor()
-    cursor.execute("DELETE FROM STOCKITEMS WHERE CODIGO =", codigo.get())
+    cursor.execute("DELETE FROM STOCKITEMS WHERE ID = " + str(id))
     conex.commit()
-    messagebox.showinfo("Articulo eliminado correctamente!")
+    messagebox.showinfo("Éxito", "Articulo eliminado correctamente!")
     #ACTUALIZAR TABLA----------------------------------------------------------------------
 
 def get_datos():
@@ -43,7 +43,7 @@ def get_datos():
     cursor.execute("SELECT * FROM STOCKITEMS")
     datos = cursor.fetchall()
     for articulo in datos:
-        data = [articulo[1], articulo[2], articulo[3], articulo[4], articulo[5], articulo[6]]
+        data = [articulo[0], articulo[1], articulo[2], articulo[3], articulo[4], articulo[5], articulo[6]]
         data_stock.append(data)
     return data_stock
 
