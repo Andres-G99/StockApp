@@ -5,6 +5,7 @@ from GUI.cantidad_window import *
 from BBDD.connect_bbdd import *
 from Controller.app_functions import crear_tabla
 from GUI.add_prod_window import add_prod_window
+from Controller.app_functions import add_item
 
 class main_window():
     def __init__(self):
@@ -40,7 +41,7 @@ class main_window():
         left_frame.config(background="#a5ee9d")
         
 
-        butt_add_prod = Button(left_frame, text="Agregar Producto", width= 20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command= add_prod_window)
+        butt_add_prod = Button(left_frame, text="Agregar Producto", width= 20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command= self.new_addw)
         butt_add_prod.place(x= (((w*0.2)/2) - 80), y= (40))  # p = x/2 - l
         
 
@@ -58,13 +59,26 @@ class main_window():
         butt_busqueda.place(x= (((w*0.2)/2) - 80), y=(h*0.5 + 80))
 
         #PANEL DERECHO
+        global right_frame
         right_frame = Frame(root, width=(w*0.8), height=(h*0.8))
         right_frame.pack(expand=True, side='right', fill=BOTH)
         right_frame.config(background="#b0bec5")
         crear_tabla(right_frame)
-        
 
 
         root.mainloop()
     
 
+
+    def update(self, code, name, cantidad, prec_u, porc_ag):
+        add_item(code, name, cantidad, prec_u, porc_ag)
+        self.update_tabla()
+
+    def new_addw(self):
+        m = add_prod_window(self.update)
+
+    def update_tabla(self):
+        print("Update tabla")
+        global right_frame
+        self.frame = right_frame
+        crear_tabla(right_frame)

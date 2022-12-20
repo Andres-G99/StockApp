@@ -37,16 +37,15 @@ def eliminar_articulo(codigo):
     #ACTUALIZAR TABLA----------------------------------------------------------------------
 
 def get_datos():
-    data = []
-    iter = 0
+    data_stock = []
     conex = sqlite3.connect("BBDD/stockBBDD.db")
     cursor = conex.cursor()
     cursor.execute("SELECT * FROM STOCKITEMS")
     datos = cursor.fetchall()
     for articulo in datos:
-        data[iter] = {articulo[1], articulo[2], articulo[3], articulo[4], articulo[5], articulo[6]}
-        iter + 1 
-    return data
+        data = [articulo[1], articulo[2], articulo[3], articulo[4], articulo[5], articulo[6]]
+        data_stock.append(data)
+    return data_stock
 
 def modificar_articulo():
     pass
