@@ -47,11 +47,17 @@ def get_datos():
         data_stock.append(data)
     return data_stock
 
-def modificar_articulo():
-    pass
+def modificar_articulo(id, codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final):
+    conex = sqlite3.connect("BBDD/stockBBDD.db")
+    cursor = conex.cursor()
+    data = codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final
+    cursor.execute("UPDATE STOCKITEMS SET CODIGO = ?, NOMBRE = ?, CANTIDAD = ?, PRECIO_UNIT = ?, PORCENT_AG = ?, PRECIO_FINAL = ? WHERE id = " + str(id), data)
+    conex.commit()
+    messagebox.showinfo("Éxito", "Articulo modificado correctamente!")
 
-def agregar_cantidad():
-    pass
-
-def eliminar_cantidad():
-    pass
+def modificar_unidad(id, cantidad):
+    conex = sqlite3.connect("BBDD/stockBBDD.db")
+    cursor = conex.cursor()
+    data = cantidad, id
+    cursor.execute("UPDATE STOCKITEMS SET CANTIDAD = ? WHERE id = ?", data)
+    conex.commit()
