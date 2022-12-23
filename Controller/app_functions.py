@@ -13,7 +13,10 @@ def add_item(codigo, nombre, cantidad, precio_unit, porcent_ag):
 def update_record(id, code, name, cantidad, prec_u, porc_ag):
     precio_final = float(prec_u + (prec_u * (porc_ag/100)))
     modificar_articulo(id, code, name, cantidad, prec_u, porc_ag, precio_final)
-    destruir_tabla()
+    selected = tabla.focus()
+    values = tabla.item(selected, 'values')
+    tabla.item(selected, values=(None, code, name, cantidad, prec_u, porc_ag, precio_final))
+    #destruir_tabla()
 
 def crear_tabla(frame):
     global tabla
@@ -68,6 +71,7 @@ def add_record(dato):
     global count
     if count % 2 == 0:
         tabla.insert(parent='', index='end', id= count, values=(None, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "par")
+        print(dato)
     else:
         tabla.insert(parent='', index='end', id= count, values=(None, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "impar")
     count += 1
@@ -98,7 +102,7 @@ def increment_record():
     values = tabla.item(selected, 'values')
     cantidad = int(values[3]) + 1
     modificar_unidad(values[0], cantidad)
-    destruir_tabla()
+    tabla.item(selected, values=(None, values[1], values[2], cantidad, values[4], values[5], values[6]))
 
 def decrement_record():
     selected = tabla.focus()
@@ -107,17 +111,11 @@ def decrement_record():
     
     if (int(values[3]) - 1) <= 0:
         messagebox.showinfo("Error", "No hay mas unidades de este artículo")
-        
     else:
         cantidad = (int(values[3]) - 1)
         modificar_unidad(values[0], cantidad)
-        destruir_tabla()
-    # if ((int(values[3]) - 1) == 0) or (values[3] == 0):
-    #     messagebox.showinfo("Error", "No hay mas unidades de este artículo")
-    # else:
-    #     cantidad = int(values[3]) - 1
-    #     modificar_unidad(values[0], cantidad)
-    #     destruir_tabla()
+        tabla.item(selected, values=(None, values[1], values[2], cantidad, values[4], values[5], values[6]))
+
 
 
 

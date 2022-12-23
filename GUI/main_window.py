@@ -83,15 +83,11 @@ class main_window():
 
     def modificar_registro(self, id, code, name, cantidad, prec_u, porc_ag):
         update_record(id, code, name, cantidad, prec_u, porc_ag)
-        crear_tabla(right_frame)
+        #crear_tabla(right_frame)
 
     def add_unidad(self):
         increment_record()
-        crear_tabla(right_frame)
+        #crear_tabla(right_frame)
     
     def del_unidad(self):
-        try:
-            decrement_record()
-            crear_tabla(right_frame)
-        except:
-            messagebox.showinfo("Error", "No se")
+        decrement_record()
