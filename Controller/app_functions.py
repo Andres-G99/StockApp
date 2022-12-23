@@ -103,22 +103,19 @@ def increment_record():
     values = tabla.item(selected, 'values')
     cantidad = int(values[3]) + 1
     modificar_unidad(values[0], cantidad)
-    tabla.item(selected, values=(None, values[1], values[2], cantidad, values[4], values[5], values[6]))
+    tabla.item(selected, values=(values[0], values[1], values[2], cantidad, values[4], values[5], values[6]))
 
 def decrement_record():
     selected = tabla.focus()
     values = tabla.item(selected, 'values')
-    print(values[3])
     
-    if (int(values[3]) - 1) <= 0:
+    if (int(values[3]) - 1) < 0:
         messagebox.showinfo("Error", "No hay mas unidades de este artículo")
     else:
         cantidad = (int(values[3]) - 1)
-        modificar_unidad(values[0], cantidad)
-        tabla.item(selected, values=(None, values[1], values[2], cantidad, values[4], values[5], values[6]))
-
-
-
+        id = values[0]
+        modificar_unidad(id, cantidad)
+        tabla.item(selected, values=(values[0], values[1], values[2], cantidad, values[4], values[5], values[6]))
 
 def destruir_tabla():
     tabla.destroy()
