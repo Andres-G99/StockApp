@@ -6,8 +6,8 @@ from BBDD.connect_bbdd import *
 
 def add_item(codigo, nombre, cantidad, precio_unit, porcent_ag):
     precio_final = float(precio_unit + (precio_unit * (porcent_ag/100)))
-    insertar_articulo(codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final)
-    dato = (codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final)
+    insertar_articulo(codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final)
+    dato = (codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final)
     add_record(dato)
 
 def update_record(id, code, name, cantidad, prec_u, porc_ag):
@@ -15,7 +15,8 @@ def update_record(id, code, name, cantidad, prec_u, porc_ag):
     modificar_articulo(id, code, name, cantidad, prec_u, porc_ag, precio_final)
     selected = tabla.focus()
     values = tabla.item(selected, 'values')
-    tabla.item(selected, values=(None, code, name, cantidad, prec_u, porc_ag, precio_final))
+    tabla.item(selected, values=(id, code, name, cantidad, prec_u, porc_ag, precio_final))
+
     #destruir_tabla()
 
 def crear_tabla(frame):
@@ -70,10 +71,10 @@ def crear_tabla(frame):
 def add_record(dato):
     global count
     if count % 2 == 0:
-        tabla.insert(parent='', index='end', id= count, values=(None, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "par")
+        tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "par")
         print(dato)
     else:
-        tabla.insert(parent='', index='end', id= count, values=(None, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "impar")
+        tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "impar")
     count += 1
     update_data()
 
@@ -84,7 +85,7 @@ def remove_record():
     code = dato[0]
     eliminar_articulo(code)
     tabla.delete(del_item)
-    destruir_tabla()
+    destruir_tabla() #para que la lineas queden intercaladas
 
     
 def update_data():

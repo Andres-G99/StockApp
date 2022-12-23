@@ -14,9 +14,9 @@ class modif_window():
         self.id = values[0]
         self.code = StringVar()
         self.name = StringVar()
-        self.cantidad = IntVar()
-        self.prec_u = IntVar()
-        self.porc_ag = IntVar()
+        self.cantidad = StringVar()
+        self.prec_u = StringVar()
+        self.porc_ag = StringVar()
 
 
         l1 = Label(self.frame, text="Código", bg="#C2CEE5", font = ('Helvetica', 12,'bold'))
