@@ -61,3 +61,6 @@ def modificar_unidad(id, cantidad):
     data = cantidad, id
     cursor.execute("UPDATE STOCKITEMS SET CANTIDAD = ? WHERE id = ?", data)
     conex.commit()
+
+
+

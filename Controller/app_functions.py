@@ -1,6 +1,8 @@
 #from GUI.add_prod_window import *
 from tkinter import *
 from tkinter import ttk
+import re
+
 from BBDD.connect_bbdd import *
 
 
@@ -19,7 +21,7 @@ def update_record(id, code, name, cantidad, prec_u, porc_ag):
 
     #destruir_tabla()
 
-def crear_tabla(frame):
+def crear_tabla(frame, filtro, data):
     global tabla
     global sb
     #Scroll
@@ -53,7 +55,10 @@ def crear_tabla(frame):
 
     
     global count, datos
-    datos = get_datos()
+    if filtro == True:
+        datos = data
+    else:
+        datos = get_datos()
     count = 0
 
     tabla.tag_configure('impar', background = "white")
@@ -72,7 +77,6 @@ def add_record(dato):
     global count
     if count % 2 == 0:
         tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "par")
-        print(dato)
     else:
         tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "impar")
     count += 1
@@ -120,3 +124,14 @@ def decrement_record():
 def destruir_tabla():
     tabla.destroy()
     sb.destroy()
+
+def buscar(parametro):
+    datos = []
+    bbdata = get_datos()
+    for dato in bbdata:
+        if re.search(parametro, dato[1], re.IGNORECASE):
+            datos.append(dato)
+    destruir_tabla()
+    return datos
+
+    

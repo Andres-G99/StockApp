@@ -6,13 +6,14 @@ from GUI.add_prod_window import add_prod_window
 from GUI.modif_window import modif_window
 from BBDD.connect_bbdd import *
 from Controller.app_functions import crear_tabla, selected_record
-from Controller.app_functions import add_item, remove_record, update_record, increment_record, decrement_record
+from Controller.app_functions import add_item, remove_record, update_record, increment_record, decrement_record, buscar, destruir_tabla
 
 class main_window():
     def __init__(self):
         root = Tk()
         root.state('zoomed')
         root.title("StockApp")
+        self.barra_param = StringVar()
         
         w = root.winfo_screenwidth()
         h = root.winfo_screenheight()
@@ -50,10 +51,13 @@ class main_window():
         lista_param.set("Todos")
         lista_param.place(x= (((w*0.2)/2) - 80), y=(h*0.5))
 
-        barra_busqueda = Entry(left_frame, width=30)
+        barra_busqueda = Entry(left_frame, width=30, textvariable=self.barra_param)
         barra_busqueda.place(x= (((w*0.2)/2) - 80), y=(h*0.5 + 40))
 
-        butt_busqueda = Button(left_frame, text="Buscar", width=20, bg= "#E6E2C3", bd= 1, font="Sans-serif")
+        Btn_desh = Button(left_frame, text="X", width=3, bg= "#E6E2C3", bd= 1, command=self.deshacer_busqueda)
+        Btn_desh.place(x= (((w*0.2)/2) + 120), y=(h*0.5 + 40))
+
+        butt_busqueda = Button(left_frame, text="Buscar", width=20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command=self.search)
         butt_busqueda.place(x= (((w*0.2)/2) - 80), y=(h*0.5 + 80))
 
         #PANEL DERECHO
@@ -61,7 +65,7 @@ class main_window():
         right_frame = Frame(root, width=(w*0.8), height=(h*0.8))
         right_frame.pack(expand=True, side='right', fill=BOTH)
         right_frame.config(background="#b0bec5")
-        crear_tabla(right_frame)
+        crear_tabla(right_frame, False, None)
 
 
         root.mainloop()
@@ -76,7 +80,7 @@ class main_window():
 
     def eliminar_registro(self):
         remove_record()
-        crear_tabla(right_frame)
+        crear_tabla(right_frame, False, None)
 
     def new_modfW(self):
         mw = modif_window(self.modificar_registro)
@@ -91,3 +95,11 @@ class main_window():
     
     def del_unidad(self):
         decrement_record()
+
+    def search(self):
+        result = buscar(self.barra_param.get())
+        crear_tabla(right_frame, True, result)
+
+    def deshacer_busqueda(self):
+        destruir_tabla()
+        crear_tabla(right_frame, False, None)
