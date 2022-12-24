@@ -73,7 +73,7 @@ def modificar_unidad(id, cantidad, opt):
         data = cantidad, cant_inc, id
         cursor.execute("UPDATE STOCKITEMS SET CANTIDAD = ?, INGRESOS = ? WHERE id = ?", data)
         conex.commit()
-        print ("Cantidad: " + str(dato[0][3]) + ", ingresos: " + str(dato[0][8]) + ", salidas: " + str(dato[0][9]))
+        #print ("Cantidad: " + str(dato[0][3]) + ", ingresos: " + str(dato[0][8]) + ", salidas: " + str(dato[0][9]))
     elif opt == "dec":
         if dato[0][9] == None:
             cant_salida = 1
@@ -82,7 +82,7 @@ def modificar_unidad(id, cantidad, opt):
         data = cantidad, cant_salida, id
         cursor.execute("UPDATE STOCKITEMS SET CANTIDAD = ?, SALIDAS = ? WHERE id = ?", data)
         conex.commit()
-        print ("Cantidad: " + str(cantidad_act-1) + ", ingresos: " + str(dato[0][8]) + ", salidas: " + str(cant_salida))
+        #print ("Cantidad: " + str(cantidad_act-1) + ", ingresos: " + str(dato[0][8]) + ", salidas: " + str(cant_salida))
 
 
 

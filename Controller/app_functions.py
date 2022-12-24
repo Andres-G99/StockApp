@@ -151,4 +151,21 @@ def buscar(parametro, opcion):
             if re.search(parametro, dato[1], re.IGNORECASE) or re.search(parametro, dato[2], re.IGNORECASE):
                 datos.append(dato)
         destruir_tabla()
-        return datos            
+        return datos
+
+def ordenar_datos(): #odena por salida
+    datos = get_datos()
+    # for i in range(len(datos)-1):
+    #     if datos[i][9] < datos[i+1][9]:
+    #         print(datos[i][9])
+    #         print(datos[i+1][9])
+    #         datos[i], datos[i+1] = datos[i+1], datos[i]
+    # return datos
+
+    n = len(datos)
+    for i in range(n-1):
+        for j in range(n-1-i):
+            if datos[j][9] < datos[j+1][9]:
+                datos[j], datos[j+1] = datos[j+1], datos[j]
+    return datos
+    #print(datos)
