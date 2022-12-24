@@ -14,7 +14,7 @@ class main_window():
         root.state('zoomed')
         root.title("StockApp")
         self.barra_param = StringVar()
-        
+        self.opcion = StringVar()
         w = root.winfo_screenwidth()
         h = root.winfo_screenheight()
 
@@ -47,7 +47,7 @@ class main_window():
         butt_elim_prod = Button(left_frame, text="Eliminar Producto", width= 20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command=self.eliminar_registro)
         butt_elim_prod.place(x= (((w*0.2)/2) - 80), y=(100))
 
-        lista_param = ttk.Combobox(left_frame, width= 30, values=["Todos","Por nombre", "Por código", "Por precio"])
+        lista_param = ttk.Combobox(left_frame, width= 30, values=["Todos","Por nombre", "Por código"], textvariable=self.opcion)
         lista_param.set("Todos")
         lista_param.place(x= (((w*0.2)/2) - 80), y=(h*0.5))
 
@@ -97,7 +97,7 @@ class main_window():
         decrement_record()
 
     def search(self):
-        result = buscar(self.barra_param.get())
+        result = buscar(self.barra_param.get(), self.opcion.get())
         crear_tabla(right_frame, True, result)
 
     def deshacer_busqueda(self):

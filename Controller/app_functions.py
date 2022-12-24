@@ -125,13 +125,26 @@ def destruir_tabla():
     tabla.destroy()
     sb.destroy()
 
-def buscar(parametro):
+def buscar(parametro, opcion):
     datos = []
     bbdata = get_datos()
-    for dato in bbdata:
-        if re.search(parametro, dato[1], re.IGNORECASE):
-            datos.append(dato)
-    destruir_tabla()
-    return datos
+    if opcion == "Por código":
+        for dato in bbdata:
+            if re.search(parametro, dato[1], re.IGNORECASE):
+                datos.append(dato)
+        destruir_tabla()
+        return datos
 
+    elif opcion == "Por nombre":
+        for dato in bbdata:
+            if re.search(parametro, dato[2], re.IGNORECASE):
+                datos.append(dato)
+        destruir_tabla()
+        return datos       
     
+    elif opcion == "Todos":
+        for dato in bbdata:
+            if re.search(parametro, dato[1], re.IGNORECASE) or re.search(parametro, dato[2], re.IGNORECASE):
+                datos.append(dato)
+        destruir_tabla()
+        return datos            
