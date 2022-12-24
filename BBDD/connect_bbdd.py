@@ -13,17 +13,21 @@ def create_bbdd():
             CANTIDAD INTEGER(10),
             PRECIO_UNIT FLOAT(15),
             PORCENT_AG FLOAT(10),
-            PRECIO_FINAL FLOAT(15))
+            PRECIO_FINAL FLOAT(15),
+            CANTIDAD_MIN INTEGER(10),
+            INGRESOS INTEGER(50),
+            SALIDAS INTEGER(50))
         ''')
     except:
         messagebox.showwarning("Error BBDD", "La BBDD ya existe")
         print("Error con la bbdd")
 
-def insertar_articulo(codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final):
+def insertar_articulo(codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final, cantidad_min):
     conex = sqlite3.connect("BBDD/stockBBDD.db")
     cursor = conex.cursor()
-    data = codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final
-    cursor.execute("INSERT INTO STOCKITEMS VALUES(NULL,?,?,?,?,?,?)", data)
+    primer_ingreso = cantidad
+    data = codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final, cantidad_min, primer_ingreso, 0
+    cursor.execute("INSERT INTO STOCKITEMS VALUES(NULL,?,?,?,?,?,?,?,?,?)", data)
     conex.commit()
     messagebox.showinfo("Éxito","Articulo guardado correctamente!")
     #ACTUALIZAR TABLA----------------------------------------------------------------------
@@ -43,7 +47,7 @@ def get_datos():
     cursor.execute("SELECT * FROM STOCKITEMS")
     datos = cursor.fetchall()
     for articulo in datos:
-        data = [articulo[0], articulo[1], articulo[2], articulo[3], articulo[4], articulo[5], articulo[6]]
+        data = [articulo[0], articulo[1], articulo[2], articulo[3], articulo[4], articulo[5], articulo[6], articulo[7], articulo[8], articulo[9]]
         data_stock.append(data)
     return data_stock
 
@@ -55,12 +59,30 @@ def modificar_articulo(id, codigo, nombre, cantidad, precio_unit, porcent_ag, pr
     conex.commit()
     messagebox.showinfo("Éxito", "Articulo modificado correctamente!")
 
-def modificar_unidad(id, cantidad):
+def modificar_unidad(id, cantidad, opt):
     conex = sqlite3.connect("BBDD/stockBBDD.db")
     cursor = conex.cursor()
-    data = cantidad, id
-    cursor.execute("UPDATE STOCKITEMS SET CANTIDAD = ? WHERE id = ?", data)
-    conex.commit()
+
+    cursor.execute("SELECT * FROM STOCKITEMS WHERE ID = " + str(id))
+    dato = cursor.fetchall()
+    cantidad_act = (dato[0][3])
+
+
+    if opt == "inc":
+        cant_inc = int(dato[0][8] + 1)
+        data = cantidad, cant_inc, id
+        cursor.execute("UPDATE STOCKITEMS SET CANTIDAD = ?, INGRESOS = ? WHERE id = ?", data)
+        conex.commit()
+        print ("Cantidad: " + str(dato[0][3]) + ", ingresos: " + str(dato[0][8]) + ", salidas: " + str(dato[0][9]))
+    elif opt == "dec":
+        if dato[0][9] == None:
+            cant_salida = 1
+        else:
+            cant_salida = int(dato[0][9] + 1)
+        data = cantidad, cant_salida, id
+        cursor.execute("UPDATE STOCKITEMS SET CANTIDAD = ?, SALIDAS = ? WHERE id = ?", data)
+        conex.commit()
+        print ("Cantidad: " + str(cantidad_act-1) + ", ingresos: " + str(dato[0][8]) + ", salidas: " + str(cant_salida))
 
 
 

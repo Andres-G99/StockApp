@@ -8,13 +8,13 @@ class modif_window():
         self.frame.pack(fill=BOTH)
         values = selected_record()
         self.modificar_registro = modificar_registro
-
     
         #Campos
         self.id = values[0]
         self.code = StringVar()
         self.name = StringVar()
         self.cantidad = StringVar()
+        self.cantidad_min = StringVar()
         self.prec_u = StringVar()
         self.porc_ag = StringVar()
 
@@ -37,6 +37,12 @@ class modif_window():
         e3.insert(0, values[3])
         e3.pack()
 
+        l3_b = Label(self.frame, text="Cantidad Mínima", bg="#C2CEE5", font = ('Helvetica', 12,'bold'))
+        l3_b.pack()
+        e3_b = Entry(self.frame, width= 30, textvariable=self.cantidad_min)
+        e3_b.insert(0, values[7])
+        e3_b.pack()
+
         l4 = Label(self.frame, text="Precio unitario", bg="#C2CEE5", font = ('Helvetica', 12,'bold'))
         l4.pack()
         e4 = Entry(self.frame, width= 30, textvariable=self.prec_u)
@@ -57,4 +63,4 @@ class modif_window():
 
 
     def modificar_datos(self):
-        self.modificar_registro(self.id, self.code.get(), self.name.get(), self.cantidad.get(), self.prec_u.get(), self.porc_ag.get())
+        self.modificar_registro(self.id, self.code.get(), self.name.get(), self.cantidad.get(), self.cantidad_min.get(), self.prec_u.get(), self.porc_ag.get())

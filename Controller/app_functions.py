@@ -6,10 +6,10 @@ import re
 from BBDD.connect_bbdd import *
 
 
-def add_item(codigo, nombre, cantidad, precio_unit, porcent_ag):
+def add_item(codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag):
     precio_final = float(precio_unit + (precio_unit * (porcent_ag/100)))
-    insertar_articulo(codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final)
-    dato = (codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final)
+    insertar_articulo(codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final, int(cantidad_min))
+    dato = (codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final, int(cantidad_min))
     add_record(dato)
 
 def update_record(id, code, name, cantidad, prec_u, porc_ag):
@@ -32,7 +32,7 @@ def crear_tabla(frame, filtro, data):
     tabla.pack(padx=0)
 
     sb.config(command=tabla.yview)
-    tabla['columns'] = ("Id", "Codigo", "Nombre", "Cantidad", "Precio unitario", "% Agregado", "Precio final")
+    tabla['columns'] = ("Id", "Codigo", "Nombre", "Cantidad", "Precio unitario", "% Agregado", "Precio final", "Cant min")
 
 
     tabla.column("#0", stretch = NO, width=1)
@@ -43,6 +43,7 @@ def crear_tabla(frame, filtro, data):
     tabla.column("Precio unitario", width=170, minwidth= 160)
     tabla.column("% Agregado", width=170, minwidth= 160)  
     tabla.column("Precio final", width=170, minwidth= 160)
+    tabla.column("Cant min", stretch = NO, width=1)
 
     tabla.heading("#0", text="")
     tabla.heading("Id", text="Id")
@@ -52,7 +53,7 @@ def crear_tabla(frame, filtro, data):
     tabla.heading("Precio unitario", text="Precio unitario")
     tabla.heading("% Agregado", text="% Agregado")
     tabla.heading("Precio final", text="Precio final")
-
+    tabla.heading("Cant min", text='')
     
     global count, datos
     if filtro == True:
@@ -66,9 +67,9 @@ def crear_tabla(frame, filtro, data):
 
     for i in range(len(datos)):
         if count % 2 == 0:
-            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6]), tag = "par")
+            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "par")
         else:
-            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6]), tag = "impar")
+            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "impar")
         count += 1
 
     
@@ -76,11 +77,13 @@ def crear_tabla(frame, filtro, data):
 def add_record(dato):
     global count
     if count % 2 == 0:
-        tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "par")
+        tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5], dato[6]), tag = "par")
     else:
-        tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5]), tag = "impar")
+        tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5], dato[6]), tag = "impar")
     count += 1
+    print(dato)
     update_data()
+    destruir_tabla()
 
 
 def remove_record():
@@ -100,13 +103,14 @@ def update_data():
 def selected_record():
     selected = tabla.focus()
     values = tabla.item(selected, 'values')
+    print(values)
     return values
 
 def increment_record():
     selected = tabla.focus()
     values = tabla.item(selected, 'values')
     cantidad = int(values[3]) + 1
-    modificar_unidad(values[0], cantidad)
+    modificar_unidad(values[0], cantidad, "inc")
     tabla.item(selected, values=(values[0], values[1], values[2], cantidad, values[4], values[5], values[6]))
 
 def decrement_record():
@@ -118,7 +122,7 @@ def decrement_record():
     else:
         cantidad = (int(values[3]) - 1)
         id = values[0]
-        modificar_unidad(id, cantidad)
+        modificar_unidad(id, cantidad, "dec")
         tabla.item(selected, values=(values[0], values[1], values[2], cantidad, values[4], values[5], values[6]))
 
 def destruir_tabla():

@@ -7,6 +7,7 @@ from GUI.modif_window import modif_window
 from BBDD.connect_bbdd import *
 from Controller.app_functions import crear_tabla, selected_record
 from Controller.app_functions import add_item, remove_record, update_record, increment_record, decrement_record, buscar, destruir_tabla
+from GUI.stats_window import stats_window
 
 class main_window():
     def __init__(self):
@@ -30,10 +31,12 @@ class main_window():
         butt_modif = Button(bottom_frame, text="Modificar", width=15, bg= "#E6E2C3", bd= 1, font="Sans-serif", command=self.new_modfW)
         butt_add_u = Button(bottom_frame, text="Agregar unidad", width=15, bg= "#E6E2C3", bd= 1, font="Sans-serif", command=self.add_unidad)
         butt_elim_u = Button(bottom_frame, text="Eliminar unidad", width=15, bg= "#E6E2C3", bd= 1, font="Sans-serif", command=self.del_unidad)
+        butt_stats = Button(bottom_frame, text="Ver Estadísticas", width=15, bg= "#E6E2C3", bd= 1, font="Sans-serif", command=self.new_stats)
 
         butt_modif.place(x= (w*0.2), y= (30))
         butt_add_u.place(x= (w*0.2 + 200), y= (30))
         butt_elim_u.place(x= (w*0.2 + 400), y= (30))
+        butt_stats.place(x= (w*0.2 + 600), y= (30))
 
         #PANEL IZQUIERDO
         left_frame = Frame(root, width=(w*0.2), height=(h*0.8))
@@ -72,18 +75,22 @@ class main_window():
     
 
 
-    def update(self, code, name, cantidad, prec_u, porc_ag):
-        add_item(code, name, cantidad, prec_u, porc_ag)
+    def update(self, code, name, cantidad, cantidad_min, prec_u, porc_ag):
+        add_item(code, name, cantidad, cantidad_min, prec_u, porc_ag)
+        crear_tabla(right_frame, False, None)
 
     def new_addw(self):
         m = add_prod_window(self.update)
 
-    def eliminar_registro(self):
-        remove_record()
-        crear_tabla(right_frame, False, None)
+    def new_stats(self):
+        s = stats_window()
 
     def new_modfW(self):
         mw = modif_window(self.modificar_registro)
+
+    def eliminar_registro(self):
+        remove_record()
+        crear_tabla(right_frame, False, None)
 
     def modificar_registro(self, id, code, name, cantidad, prec_u, porc_ag):
         update_record(id, code, name, cantidad, prec_u, porc_ag)
@@ -103,3 +110,4 @@ class main_window():
     def deshacer_busqueda(self):
         destruir_tabla()
         crear_tabla(right_frame, False, None)
+    

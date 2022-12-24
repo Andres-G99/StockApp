@@ -12,6 +12,7 @@ class add_prod_window():
         self.code = StringVar()
         self.name = StringVar()
         self.cantidad = IntVar()
+        self.cantidad_min = IntVar()
         self.prec_u = IntVar()
         self.porc_ag = IntVar()
 
@@ -30,6 +31,11 @@ class add_prod_window():
         e3 = Entry(self.frame, width= 30, textvariable=self.cantidad)
         e3.pack()
 
+        l3_b = Label(self.frame, text="Cantidad Mínima", bg="#C2CEE5", font = ('Helvetica', 12,'bold'))
+        l3_b.pack()
+        e3_b = Entry(self.frame, width= 30, textvariable=self.cantidad_min)
+        e3_b.pack()
+
         l4 = Label(self.frame, text="Precio unitario", bg="#C2CEE5", font = ('Helvetica', 12,'bold'))
         l4.pack()
         e4 = Entry(self.frame, width= 30, textvariable=self.prec_u)
@@ -41,11 +47,11 @@ class add_prod_window():
         e5.pack()
 
         b = Button(self.frame, text="Agregar producto", width=20, bg= "#E6E2C3", bd= 1, font="Sans-serif", command= self.enviar_datos)
-        #        b = Button(self.frame, text="Agregar producto", width=30, bg= "#E6E2C3", bd= 1, font="Sans-serif", command= self.enviar_datos(self.code, self.name, self.cantidad, self.prec_u, self.porc_ag))
+        
         b.pack(pady=20)
 
 
 
     
     def enviar_datos(self):
-        self.update(self.code.get(), self.name.get(), self.cantidad.get(), self.prec_u.get(), self.porc_ag.get())
+        self.update(self.code.get(), self.name.get(), self.cantidad.get(), self.cantidad_min.get(), self.prec_u.get(), self.porc_ag.get())
