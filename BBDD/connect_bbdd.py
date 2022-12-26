@@ -20,7 +20,7 @@ def create_bbdd():
         ''')
     except:
         messagebox.showwarning("Error BBDD", "La BBDD ya existe")
-        print("Error con la bbdd")
+
 
 def insertar_articulo(codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final, cantidad_min):
     conex = sqlite3.connect("BBDD/stockBBDD.db")
@@ -51,11 +51,11 @@ def get_datos():
         data_stock.append(data)
     return data_stock
 
-def modificar_articulo(id, codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final):
+def modificar_articulo(id, codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag, precio_final):
     conex = sqlite3.connect("BBDD/stockBBDD.db")
     cursor = conex.cursor()
-    data = codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final
-    cursor.execute("UPDATE STOCKITEMS SET CODIGO = ?, NOMBRE = ?, CANTIDAD = ?, PRECIO_UNIT = ?, PORCENT_AG = ?, PRECIO_FINAL = ? WHERE id = " + str(id), data)
+    data = codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag, precio_final
+    cursor.execute("UPDATE STOCKITEMS SET CODIGO = ?, NOMBRE = ?, CANTIDAD = ?, CANTIDAD_MIN = ?, PRECIO_UNIT = ?, PORCENT_AG = ?, PRECIO_FINAL = ? WHERE id = " + str(id), data)
     conex.commit()
     messagebox.showinfo("Éxito", "Articulo modificado correctamente!")
 

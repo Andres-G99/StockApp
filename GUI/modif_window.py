@@ -3,8 +3,8 @@ from Controller.app_functions import add_item, selected_record
 
 class modif_window():
     def __init__(self, modificar_registro):
-        top = Toplevel()
-        self.frame = Frame(top, width=500, height=300, bg="#C2CEE5")
+        self.top = Toplevel()
+        self.frame = Frame(self.top, width=500, height=300, bg="#C2CEE5")
         self.frame.pack(fill=BOTH)
         values = selected_record()
         self.modificar_registro = modificar_registro
@@ -64,3 +64,4 @@ class modif_window():
 
     def modificar_datos(self):
         self.modificar_registro(self.id, self.code.get(), self.name.get(), self.cantidad.get(), self.cantidad_min.get(), self.prec_u.get(), self.porc_ag.get())
+        self.top.destroy()

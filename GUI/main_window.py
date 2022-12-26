@@ -92,8 +92,8 @@ class main_window():
         remove_record()
         crear_tabla(right_frame, False, None)
 
-    def modificar_registro(self, id, code, name, cantidad, prec_u, porc_ag):
-        update_record(id, code, name, cantidad, prec_u, porc_ag)
+    def modificar_registro(self, id, code, name, cantidad, cantidad_min, prec_u, porc_ag):
+        update_record(id, code, name, cantidad, cantidad_min, prec_u, porc_ag)
         #crear_tabla(right_frame)
 
     def add_unidad(self):

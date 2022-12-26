@@ -12,12 +12,12 @@ def add_item(codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag):
     dato = (codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final, int(cantidad_min))
     add_record(dato)
 
-def update_record(id, code, name, cantidad, prec_u, porc_ag):
-    precio_final = float(prec_u + (prec_u * (porc_ag/100)))
-    modificar_articulo(id, code, name, cantidad, prec_u, porc_ag, precio_final)
+def update_record(id, code, name, cantidad, cantidad_min, prec_u, porc_ag):
+    precio_final = float(prec_u) + (float(prec_u) * (float(porc_ag)/100))
+    modificar_articulo(id, code, name, cantidad, cantidad_min, prec_u, porc_ag, precio_final)
     selected = tabla.focus()
     values = tabla.item(selected, 'values')
-    tabla.item(selected, values=(id, code, name, cantidad, prec_u, porc_ag, precio_final))
+    tabla.item(selected, values=(id, code, name, cantidad, prec_u, porc_ag, precio_final, cantidad_min))
 
     #destruir_tabla()
 
@@ -81,7 +81,7 @@ def add_record(dato):
     else:
         tabla.insert(parent='', index='end', id= count, values=(count, dato[0], dato[1], dato[2], dato[3], dato[4], dato[5], dato[6]), tag = "impar")
     count += 1
-    print(dato)
+    #print(dato)
     update_data()
     destruir_tabla()
 
@@ -103,7 +103,7 @@ def update_data():
 def selected_record():
     selected = tabla.focus()
     values = tabla.item(selected, 'values')
-    print(values)
+    #print(values)
     return values
 
 def increment_record():
@@ -153,15 +153,8 @@ def buscar(parametro, opcion):
         destruir_tabla()
         return datos
 
-def ordenar_datos(): #odena por salida
+def ordenar_por_salida(): #odena por salida
     datos = get_datos()
-    # for i in range(len(datos)-1):
-    #     if datos[i][9] < datos[i+1][9]:
-    #         print(datos[i][9])
-    #         print(datos[i+1][9])
-    #         datos[i], datos[i+1] = datos[i+1], datos[i]
-    # return datos
-
     n = len(datos)
     for i in range(n-1):
         for j in range(n-1-i):
@@ -169,3 +162,23 @@ def ordenar_datos(): #odena por salida
                 datos[j], datos[j+1] = datos[j+1], datos[j]
     return datos
     #print(datos)
+
+def ordenar_por_faltantes():
+    datos = get_datos()
+    n = len(datos)
+    for i in range(n-1):
+        for j in range(n-1-i):
+            if (datos[j][7] - datos[j][3]) < (datos[j+1][7] - datos[j+1][3]):
+                datos[j], datos[j+1] = datos[j+1], datos[j]
+            if(datos[j+1][3] == 0):
+                datos[j], datos[j+1] = datos[j+1], datos[j]
+    return datos
+
+# def ordenar_por_faltantes():
+#     datos = get_datos()
+#     n = len(datos)
+#     for i in range(n-1):
+#         for j in range(n-1-i):
+#             if (datos[j][3] <  datos[j+1][3]):
+#                 datos[j], datos[j+1] = datos[j+1], datos[j]
+#     return datos
