@@ -1,23 +1,27 @@
 from tkinter import *
 from tkinter import ttk
+from customtkinter import *
 from Controller.app_functions import ordenar_por_salida, ordenar_por_faltantes
 
 class stats_window():
     def __init__(self):
-        self.top = Toplevel()
+        self.top = CTkToplevel(fg_color="black")
+        self.top.title("Estado del stock")
         global frame
-        self.frame = Frame(self.top, width=500, height=100, bg="#C2CEE5")
+        self.frame = CTkFrame(self.top, width=500, height=100, fg_color="#C2CEE5", border_width=2)
         self.frame.pack(fill=BOTH, side='bottom')
         self.tb = self.crear_tabla_stats(self.frame)
 
-        self.frame_btn = Frame(self.top, bg="#C2CEE5")
+        
+
+        self.frame_btn = CTkFrame(self.top, fg_color="#C2CEE5", border_width=2)
         self.frame_btn.pack(expand=False, side='top', fill = BOTH)
-        self.label_btn = Label(self.frame_btn, text="Ordenar por: ", bg="#C2CEE5")
-        self.btn_ord1 = Button(self.frame_btn, text="Faltantes", width=20, bg= "#E6E2C3", bd= 1, command=self.ord_faltantes)
-        self.btn_ord2 = Button(self.frame_btn, text="Salida", width=20, bg= "#E6E2C3", bd= 1, command=self.ord_salida)
-        self.label_btn.grid(row=0, column=0)
-        self.btn_ord1.grid(row=0, column=1)
-        self.btn_ord2.grid(row=0, column=2)
+        self.label_btn =  CTkLabel(self.frame_btn, text="Ordenar por: ", fg_color="#C2CEE5", height = 10, text_color="black")
+        self.btn_ord1 =  CTkButton(self.frame_btn, text="Faltantes", width=100, height = 10, command=self.ord_faltantes)
+        self.btn_ord2 =  CTkButton(self.frame_btn, text="Salida", width=100, height = 10, command=self.ord_salida)
+        self.label_btn.grid(row=0, column=0, pady= 2, padx = 2)
+        self.btn_ord1.grid(row=0, column=1, pady= 2)
+        self.btn_ord2.grid(row=0, column=2, pady= 2)
 
 
         self.cargar_tabla(self.tb, "faltantes")
@@ -25,17 +29,27 @@ class stats_window():
         
 
     def crear_tabla_stats(self, frame):
-        self.sb = Scrollbar(frame)
-        self.sb.pack(side=RIGHT, fill=Y)
+        style = ttk.Style()
+        style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11))
+        style.configure("mystyle.Treeview.Heading", font=('Calibri', 13,'bold')) 
+        style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})])
 
-        self.tabla_stats = ttk.Treeview(frame, height=30, yscrollcommand=self.sb.set)
-        self.tabla_stats.pack()
+        self.sb = CTkScrollbar(frame)
+        self.sb.pack(side=RIGHT, fill=Y, padx=2, pady=5)
+
+        self.tabla_stats = ttk.Treeview(frame, height=30, yscrollcommand=self.sb.set, style="mystyle.Treeview")
+        self.tabla_stats.pack(padx=5, pady=5)
         self.tabla_stats['columns'] = ('Id', 'Codigo', 'Nombre', 'Cantidad', 'Ingresos', 'Salidas', 'Estado')
-        self.sb.config(command=self.tabla_stats.yview)
+        self.sb.configure(command=self.tabla_stats.yview)
 
-        self.tabla_stats.tag_configure("sin_stock", background = "#E57373")
-        self.tabla_stats.tag_configure("reponer", background = "#FFB74D")
-        self.tabla_stats.tag_configure("en_stock", background = "#9CCC65" )
+        self.tabla_stats.tag_configure("sin_stock_par", background = "#ff8164")
+        self.tabla_stats.tag_configure("sin_stock_impar", background = "#ffa590")
+
+        self.tabla_stats.tag_configure("reponer_par", background = "#f1b04c")
+        self.tabla_stats.tag_configure("reponer_impar", background = "#f5c77e")
+
+        self.tabla_stats.tag_configure("en_stock_par", background = "#83f28f")
+        self.tabla_stats.tag_configure("en_stock_impar", background = "#abf7b1")
 
         self.tabla_stats.column("#0", stretch = NO, width=1)
         self.tabla_stats.column("Id", stretch = NO, width=1)
@@ -68,18 +82,30 @@ class stats_window():
 
         for dato in datos:
             if dato[3] > dato[7]: #CANTIDAD > CANT MIN
-                self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "STOCK"), tag = "en_stock")
-                iter = iter + 1
+                if iter % 2 == 0:
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "STOCK"), tag = "en_stock_par")
+                    iter = iter + 1
+                else:
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "STOCK"), tag = "en_stock_impar")
+                    iter = iter + 1
 
             elif dato[3] == 0:
-                self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "SIN STOCK ["+str(dato[7])+"]"), tag = "sin_stock")
-                iter = iter + 1
+                if iter % 2 == 0:
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "SIN STOCK ["+str(dato[7])+"]"), tag = "sin_stock_par")
+                    iter = iter + 1
+                else:
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "SIN STOCK ["+str(dato[7])+"]"), tag = "sin_stock_impar")
+                    iter = iter + 1
 
             elif dato[3] < dato[7]: #CANTIDAD < CANT MIN
-                cant_rep = dato[7] - dato[3]
-                self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "REPONER " + str(cant_rep)), tag = "reponer")
-                iter = iter + 1
-
+                if iter % 2 == 0:
+                    cant_rep = dato[7] - dato[3]
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "REPONER " + str(cant_rep)), tag = "reponer_par")
+                    iter = iter + 1
+                else:
+                    cant_rep = dato[7] - dato[3]
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "REPONER " + str(cant_rep)), tag = "reponer_impar")
+                    iter = iter + 1
 
     def reset_tabla(self, tb):
         for i in self.tb.get_children():

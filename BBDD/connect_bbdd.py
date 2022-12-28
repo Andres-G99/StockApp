@@ -52,6 +52,7 @@ def get_datos():
     return data_stock
 
 def modificar_articulo(id, codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag, precio_final):
+    modificar_ingresos(cantidad, id)
     conex = sqlite3.connect("BBDD/stockBBDD.db")
     cursor = conex.cursor()
     data = codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag, precio_final
@@ -62,7 +63,6 @@ def modificar_articulo(id, codigo, nombre, cantidad, cantidad_min, precio_unit, 
 def modificar_unidad(id, cantidad, opt):
     conex = sqlite3.connect("BBDD/stockBBDD.db")
     cursor = conex.cursor()
-
     cursor.execute("SELECT * FROM STOCKITEMS WHERE ID = " + str(id))
     dato = cursor.fetchall()
     cantidad_act = (dato[0][3])
@@ -85,4 +85,23 @@ def modificar_unidad(id, cantidad, opt):
         #print ("Cantidad: " + str(cantidad_act-1) + ", ingresos: " + str(dato[0][8]) + ", salidas: " + str(cant_salida))
 
 
-
+def modificar_ingresos(cantidad, id):
+    nueva_cantidad = int(cantidad)
+    conex = sqlite3.connect("BBDD/stockBBDD.db")
+    cursor = conex.cursor()
+    cursor.execute("SELECT * FROM STOCKITEMS WHERE ID = " + str(id))
+    dato = cursor.fetchall()
+    old_cantidad = int(dato[0][3])
+    ingresos = int(dato[0][8])
+    salidas = int(dato[0][9])
+    
+    if old_cantidad - nueva_cantidad < 0:
+        flujo = ingresos + abs(nueva_cantidad - old_cantidad)
+        data = flujo, id
+        cursor.execute("UPDATE STOCKITEMS SET INGRESOS = ? WHERE id = ?", data)
+        conex.commit()
+    elif old_cantidad - nueva_cantidad > 0:
+        flujo = salidas + (old_cantidad - nueva_cantidad)
+        data = flujo, id
+        cursor.execute("UPDATE STOCKITEMS SET SALIDAS = ? WHERE id = ?", data)
+        conex.commit()

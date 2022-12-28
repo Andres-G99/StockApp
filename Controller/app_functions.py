@@ -1,6 +1,7 @@
 #from GUI.add_prod_window import *
 from tkinter import *
 from tkinter import ttk
+from customtkinter import CTkScrollbar
 import re
 
 from BBDD.connect_bbdd import *
@@ -25,25 +26,31 @@ def crear_tabla(frame, filtro, data):
     global tabla
     global sb
     #Scroll
-    sb = Scrollbar(frame)
-    sb.pack(side=RIGHT, fill=Y)
+    sb = CTkScrollbar(frame)
+    sb.pack(side=RIGHT, fill=Y, padx=2, pady=5)
 
-    tabla = ttk.Treeview(frame, height=150, yscrollcommand=sb.set)
-    tabla.pack(padx=0)
+    style = ttk.Style()
+    style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11))
+    style.configure("mystyle.Treeview.Heading", font=('Calibri', 13,'bold')) 
+    style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})])
 
-    sb.config(command=tabla.yview)
+    # tabla = ttk.Treeview(frame, height=160, yscrollcommand=sb.set, style="mystyle.Treeview")
+    tabla = ttk.Treeview(frame, height=160, yscrollcommand=sb.set, style="mystyle.Treeview")
+    tabla.pack(padx=5, pady=5)
+
+    sb.configure(command=tabla.yview)
     tabla['columns'] = ("Id", "Codigo", "Nombre", "Cantidad", "Precio unitario", "% Agregado", "Precio final", "Cant min")
 
 
-    tabla.column("#0", stretch = NO, width=1)
-    tabla.column("Id", stretch = NO, width=1)
-    tabla.column("Codigo", width=200, minwidth= 190)
-    tabla.column("Nombre", width=300, minwidth= 290)
-    tabla.column("Cantidad", width=170, minwidth= 160)
-    tabla.column("Precio unitario", width=170, minwidth= 160)
-    tabla.column("% Agregado", width=170, minwidth= 160)  
-    tabla.column("Precio final", width=170, minwidth= 160)
-    tabla.column("Cant min", stretch = NO, width=1)
+    tabla.column("#0", stretch = NO, width=0)
+    tabla.column("Id", stretch = NO, width=0)
+    tabla.column("Codigo", width=250, minwidth= 180)
+    tabla.column("Nombre", width=400, minwidth= 340)
+    tabla.column("Cantidad", width=200, minwidth= 180)
+    tabla.column("Precio unitario", width=200, minwidth= 180)
+    tabla.column("% Agregado", width=200, minwidth= 180)  
+    tabla.column("Precio final", width=200, minwidth= 180)
+    tabla.column("Cant min", stretch = NO, width=0)
 
     tabla.heading("#0", text="")
     tabla.heading("Id", text="Id")
@@ -111,7 +118,7 @@ def increment_record():
     values = tabla.item(selected, 'values')
     cantidad = int(values[3]) + 1
     modificar_unidad(values[0], cantidad, "inc")
-    tabla.item(selected, values=(values[0], values[1], values[2], cantidad, values[4], values[5], values[6]))
+    tabla.item(selected, values=(values[0], values[1], values[2], cantidad, values[4], values[5], values[6], values[7]))
 
 def decrement_record():
     selected = tabla.focus()
@@ -123,7 +130,7 @@ def decrement_record():
         cantidad = (int(values[3]) - 1)
         id = values[0]
         modificar_unidad(id, cantidad, "dec")
-        tabla.item(selected, values=(values[0], values[1], values[2], cantidad, values[4], values[5], values[6]))
+        tabla.item(selected, values=(values[0], values[1], values[2], cantidad, values[4], values[5], values[6], values[7]))
 
 def destruir_tabla():
     tabla.destroy()
