@@ -30,8 +30,8 @@ class stats_window():
 
     def crear_tabla_stats(self, frame):
         style = ttk.Style()
-        style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11))
-        style.configure("mystyle.Treeview.Heading", font=('Calibri', 13,'bold')) 
+        style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 13))
+        style.configure("mystyle.Treeview.Heading", font=('Calibri', 14,'bold')) 
         style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})])
 
         self.sb = CTkScrollbar(frame)

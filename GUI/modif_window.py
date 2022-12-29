@@ -136,6 +136,8 @@ class modif_window():
                     messagebox.showerror("Error de entrada", "Debe completar TODOS los campos")
                     self.top.deiconify()
                     return False
-        messagebox.showerror("Error de entrada", "Por favor, corrija los errores")
-        self.top.deiconify()
-        return False
+            return True
+        else:
+            messagebox.showerror("Error de entrada", "Por favor, corrija los errores")
+            self.top.deiconify()
+            return False

@@ -30,8 +30,8 @@ def crear_tabla(frame, filtro, data):
     sb.pack(side=RIGHT, fill=Y, padx=2, pady=5)
 
     style = ttk.Style()
-    style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11))
-    style.configure("mystyle.Treeview.Heading", font=('Calibri', 13,'bold')) 
+    style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 13))
+    style.configure("mystyle.Treeview.Heading", font=('Calibri', 14,'bold')) 
     style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})])
 
     # tabla = ttk.Treeview(frame, height=160, yscrollcommand=sb.set, style="mystyle.Treeview")
@@ -189,3 +189,4 @@ def ordenar_por_faltantes():
 #             if (datos[j][3] <  datos[j+1][3]):
 #                 datos[j], datos[j+1] = datos[j+1], datos[j]
 #     return datos
+
