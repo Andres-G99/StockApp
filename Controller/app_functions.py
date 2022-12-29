@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from customtkinter import CTkScrollbar
 import re
+import pandas as pd
 
 from BBDD.connect_bbdd import *
 
@@ -162,6 +163,7 @@ def buscar(parametro, opcion):
 
 def ordenar_por_salida(): #odena por salida
     datos = get_datos()
+    
     n = len(datos)
     for i in range(n-1):
         for j in range(n-1-i):
@@ -181,12 +183,33 @@ def ordenar_por_faltantes():
                 datos[j], datos[j+1] = datos[j+1], datos[j]
     return datos
 
-# def ordenar_por_faltantes():
-#     datos = get_datos()
-#     n = len(datos)
-#     for i in range(n-1):
-#         for j in range(n-1-i):
-#             if (datos[j][3] <  datos[j+1][3]):
-#                 datos[j], datos[j+1] = datos[j+1], datos[j]
-#     return datos
+def ordenar_df():
+    datos =  ordenar_por_faltantes()
+    dt = []
+    iter = 0
+    for dato in datos:
+        if dato[3] >= dato[7]: #CANTIDAD > CANT MIN
+            datt = (dato[1], dato[2], dato[3], dato[8], dato[9], "STOCK")
+            dt.append(datt)
+            iter = iter + 1
+        elif dato[3] == 0:
+            datt = (dato[1], dato[2], dato[3], dato[8], dato[9], "SIN STOCK ["+str(dato[7])+"]")
+            dt.append(datt)
+            iter = iter + 1
+        elif dato[3] < dato[7]: #CANTIDAD < CANT MIN
+            cant_rep = dato[7] - dato[3]
+            datt = (dato[1], dato[2], dato[3], dato[8], dato[9], "REPONER " + str(cant_rep))
+            dt.append(datt)
+            iter = iter + 1
+    return dt
 
+def exp_data():
+    datos = ordenar_df()
+    indices = ["Código", "Nombre", "Cantidad", "Ingresos", "Salidas", "Estado"]
+    df = pd.DataFrame(datos, columns = indices)
+    with pd.ExcelWriter('Stock.xlsx') as writer:
+        df.to_excel(writer, "Stock faltantes")
+
+        
+
+    

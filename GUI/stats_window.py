@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from customtkinter import *
-from Controller.app_functions import ordenar_por_salida, ordenar_por_faltantes
+from Controller.app_functions import ordenar_por_salida, ordenar_por_faltantes, exp_data
 
 class stats_window():
     def __init__(self):
@@ -19,9 +19,11 @@ class stats_window():
         self.label_btn =  CTkLabel(self.frame_btn, text="Ordenar por: ", fg_color="#C2CEE5", height = 10, text_color="black")
         self.btn_ord1 =  CTkButton(self.frame_btn, text="Faltantes", width=100, height = 10, command=self.ord_faltantes)
         self.btn_ord2 =  CTkButton(self.frame_btn, text="Salida", width=100, height = 10, command=self.ord_salida)
+        self.btn_exp =  CTkButton(self.frame_btn, text="Exportar", width=100, height = 10, command=exp_data)
         self.label_btn.grid(row=0, column=0, pady= 2, padx = 2)
         self.btn_ord1.grid(row=0, column=1, pady= 2)
         self.btn_ord2.grid(row=0, column=2, pady= 2)
+        self.btn_exp.grid(row=0, column=3, pady= 2)
 
 
         self.cargar_tabla(self.tb, "faltantes")
@@ -79,9 +81,9 @@ class stats_window():
         elif opt == "salida":
             datos = ordenar_por_salida()
         iter = 0
-
         for dato in datos:
-            if dato[3] > dato[7]: #CANTIDAD > CANT MIN
+            
+            if dato[3] >= dato[7]: #CANTIDAD > CANT MIN
                 if iter % 2 == 0:
                     self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "STOCK"), tag = "en_stock_par")
                     iter = iter + 1
