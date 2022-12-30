@@ -221,14 +221,24 @@ def exp_data():
 
         
 def imp_data():
-    filepath = filedialog.askopenfilename()
-    df = pd.read_excel(filepath)
-    list_df = df.to_numpy().tolist()
-    art = 0
-    for dato in list_df:
-        art = art+1
-        insert_excel(dato[0], dato[1], dato[2], dato[3], dato[4], dato[5])
-    messagebox.showinfo("Éxito", str(art) + " articulo(s) insertados correctamente")
+    try:
+        filepath = filedialog.askopenfilename()
+        df = pd.read_excel(filepath)
+        list_df = df.to_numpy().tolist()
+        art = 0
+        art_inc = 0
+        for dato in list_df:
+            if is_int(dato[2]) and is_int(dato[3]) and is_float(dato[4]) and is_float(dato[5]):
+                art = art+1
+                insert_excel(dato[0], dato[1], dato[2], dato[3], dato[4], dato[5])
+            else:
+                art_inc = art_inc + 1
+        if art_inc == 0:
+            messagebox.showinfo("Éxito", str(art) + " articulo(s) insertados correctamente")
+        else:
+            messagebox.showerror("Error", str(art_inc) + " articulo(s) presentan campos invalidos y no fueron insertados")
+    except:
+        messagebox.showerror("Error", "Directorio o archivo inválido")
     
 
 def print_data():
@@ -266,3 +276,17 @@ def reload_tabla():
         else:
             tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "impar")
         count += 1
+
+def is_int(x):
+    try:
+        int(x)
+        return True
+    except:
+        return False
+
+def is_float(x):
+    try:
+        float(x)
+        return True
+    except:
+        return False
