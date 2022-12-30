@@ -1,9 +1,14 @@
 #from GUI.add_prod_window import *
 from tkinter import *
+from tkinter import filedialog
 from tkinter import ttk
 from customtkinter import CTkScrollbar
-import re
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
+import numpy as np
 import pandas as pd
+import os
+import re
 
 from BBDD.connect_bbdd import *
 
@@ -209,7 +214,29 @@ def exp_data():
     df = pd.DataFrame(datos, columns = indices)
     with pd.ExcelWriter('Stock.xlsx') as writer:
         df.to_excel(writer, "Stock faltantes")
+    
 
         
+def imp_data():
+    filepath = filedialog.askopenfilename()
+    df = pd.read_excel(filepath)
+    print(df)
 
-    
+def print_data():
+
+    datos = ordenar_df()
+    indices = ["Código", "Nombre", "Cantidad", "Ingresos", "Salidas", "Estado"]
+    df = pd.DataFrame(datos, columns = indices)
+    fig, ax = plt.subplots(figsize=(12,4))
+    ax.axis('tight')
+    ax.axis('off')
+    tab_imp = ax.table(cellText=df.values,colLabels=df.columns,loc='center')
+    tab_imp.auto_set_font_size(False)
+    tab_imp.auto_set_column_width(col = list(range(len(df.columns))))
+
+    pp = PdfPages("stock.pdf")
+    pp.savefig(fig, bbox_inches='tight')
+    pp.close()
+
+
+    #os.startfile('stock.pdf', 'print')

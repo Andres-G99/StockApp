@@ -8,7 +8,7 @@ from GUI.add_prod_window import add_prod_window
 from GUI.modif_window import modif_window
 from BBDD.connect_bbdd import *
 from Controller.app_functions import crear_tabla, selected_record
-from Controller.app_functions import add_item, remove_record, update_record, increment_record, decrement_record, buscar, destruir_tabla, selected_record
+from Controller.app_functions import add_item, remove_record, update_record, increment_record, decrement_record, buscar, destruir_tabla, selected_record, imp_data
 from GUI.stats_window import stats_window
 
 class main_window():
@@ -35,11 +35,13 @@ class main_window():
         butt_add_u = CTkButton(bottom_frame, text="Agregar unidad", width=150,  command=self.add_unidad)
         butt_elim_u = CTkButton(bottom_frame, text="Eliminar unidad", width=150,  command=self.del_unidad)
         butt_stats = CTkButton(bottom_frame, text="Ver Estadísticas", width=150,  command=self.new_stats)
+        butt_imp = CTkButton(bottom_frame, text="Importar de Excel", fg_color="green", width=150,  command=imp_data)
 
         butt_modif.place(relx= (0.20), rely= (0.35))
         butt_add_u.place(relx= (0.325), rely= (0.35))
         butt_elim_u.place(relx= (0.45), rely= (0.35))
         butt_stats.place(relx= (0.575), rely= (0.35))
+        butt_imp.place(relx= (0.7), rely= (0.35))
 
         #PANEL IZQUIERDO
         left_frame = CTkFrame(root, width=(w*0.05), height=(h*0.8), border_color = ("lightgreen","green"), border_width=2)

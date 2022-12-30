@@ -1,7 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from customtkinter import *
-from Controller.app_functions import ordenar_por_salida, ordenar_por_faltantes, exp_data
+from Controller.app_functions import ordenar_por_salida, ordenar_por_faltantes, exp_data, print_data
+
 
 class stats_window():
     def __init__(self):
@@ -20,10 +21,12 @@ class stats_window():
         self.btn_ord1 =  CTkButton(self.frame_btn, text="Faltantes", width=100, height = 10, command=self.ord_faltantes)
         self.btn_ord2 =  CTkButton(self.frame_btn, text="Salida", width=100, height = 10, command=self.ord_salida)
         self.btn_exp =  CTkButton(self.frame_btn, text="Exportar", width=100, height = 10, command=exp_data)
+        self.btn_print =  CTkButton(self.frame_btn, text="Imprimir", width=100, height = 10, command=print_data)
         self.label_btn.grid(row=0, column=0, pady= 2, padx = 2)
         self.btn_ord1.grid(row=0, column=1, pady= 2)
         self.btn_ord2.grid(row=0, column=2, pady= 2)
         self.btn_exp.grid(row=0, column=3, pady= 2)
+        self.btn_print.grid(row=0, column=4, pady= 2)
 
 
         self.cargar_tabla(self.tb, "faltantes")
