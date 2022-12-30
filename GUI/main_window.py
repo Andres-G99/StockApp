@@ -80,7 +80,7 @@ class main_window():
         right_frame.configure(fg_color="#b0bec5")
         crear_tabla(right_frame, False, None)
 
-
+        root.after(1000, func = None)
         root.mainloop()
     
 
@@ -107,7 +107,6 @@ class main_window():
             messagebox.showerror("Error","Debe seleccionar un articulo primero")
         else:
             remove_record()
-            crear_tabla(right_frame, False, None)
 
     def modificar_registro(self, id, code, name, cantidad, cantidad_min, prec_u, porc_ag):
         update_record(id, code, name, cantidad, cantidad_min, prec_u, porc_ag)

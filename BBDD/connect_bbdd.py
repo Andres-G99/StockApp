@@ -29,7 +29,7 @@ def insertar_articulo(codigo, nombre, cantidad, precio_unit, porcent_ag, precio_
     data = codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final, cantidad_min, primer_ingreso, 0
     cursor.execute("INSERT INTO STOCKITEMS VALUES(NULL,?,?,?,?,?,?,?,?,?)", data)
     conex.commit()
-    messagebox.showinfo("Éxito","Articulo guardado correctamente!")
+    
     #ACTUALIZAR TABLA----------------------------------------------------------------------
 
 def eliminar_articulo(id):

@@ -16,6 +16,7 @@ from BBDD.connect_bbdd import *
 def add_item(codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag):
     precio_final = float(precio_unit + (precio_unit * (porcent_ag/100)))
     insertar_articulo(codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final, int(cantidad_min))
+    messagebox.showinfo("Éxito","Articulo guardado correctamente!")
     dato = (codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final, int(cantidad_min))
     add_record(dato)
 
@@ -100,12 +101,14 @@ def add_record(dato):
 
 
 def remove_record():
-    del_item = tabla.selection()[0]
-    dato = datos[int(del_item)]
-    code = dato[0]
-    eliminar_articulo(code)
-    tabla.delete(del_item)
-    destruir_tabla() #para que la lineas queden intercaladas
+    del_item_tabla = tabla.selection()[0]
+    del_item_bbdd = selected_record()[0]
+   
+    eliminar_articulo(del_item_bbdd)
+    tabla.delete(del_item_tabla)
+    reload_tabla() #para que la lineas queden intercaladas
+
+
 
     
 def update_data():
@@ -220,7 +223,13 @@ def exp_data():
 def imp_data():
     filepath = filedialog.askopenfilename()
     df = pd.read_excel(filepath)
-    print(df)
+    list_df = df.to_numpy().tolist()
+    art = 0
+    for dato in list_df:
+        art = art+1
+        insert_excel(dato[0], dato[1], dato[2], dato[3], dato[4], dato[5])
+    messagebox.showinfo("Éxito", str(art) + " articulo(s) insertados correctamente")
+    
 
 def print_data():
 
@@ -237,6 +246,23 @@ def print_data():
     pp = PdfPages("stock.pdf")
     pp.savefig(fig, bbox_inches='tight')
     pp.close()
+    os.system('stock.pdf')
 
 
-    #os.startfile('stock.pdf', 'print')
+
+def insert_excel(codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag):
+    precio_final = float(precio_unit + (precio_unit * (porcent_ag/100)))
+    insertar_articulo(codigo, nombre, int(cantidad), float(precio_unit), float(porcent_ag), precio_final, int(cantidad_min))
+    reload_tabla()
+
+def reload_tabla():
+    for i in tabla.get_children():
+        tabla.delete(i)
+    datos = get_datos()
+    count = 0
+    for i in range(len(datos)):
+        if count % 2 == 0:
+            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "par")
+        else:
+            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "impar")
+        count += 1
