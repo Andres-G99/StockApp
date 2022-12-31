@@ -247,7 +247,7 @@ def print_data(): #Genera un pdf de la tabla stats
     text_file.write(html)
     text_file.close()
 
-    os.system('Outfiles/stock.html')
+    os.system("Outfiles\stock.html")
 
 def insert_excel(codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag):
     precio_final = float(precio_unit + (precio_unit * (porcent_ag/100)))
