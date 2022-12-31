@@ -3,11 +3,10 @@ from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
 from customtkinter import CTkScrollbar
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
+import pdfkit as pdfk
 import numpy as np
 import pandas as pd
-import os
+import os, sys
 import re
 
 from BBDD.connect_bbdd import *
@@ -152,24 +151,24 @@ def buscar(parametro, opcion):
         for dato in bbdata:
             if re.search(parametro, dato[1], re.IGNORECASE):
                 datos.append(dato)
-        destruir_tabla()
-        return datos
+        erase_tabla()
+        load_results(datos)
 
     elif opcion == "Por nombre":
         for dato in bbdata:
             if re.search(parametro, dato[2], re.IGNORECASE):
                 datos.append(dato)
-        destruir_tabla()
-        return datos       
+        erase_tabla()
+        load_results(datos)       
     
     elif opcion == "Todos":
         for dato in bbdata:
             if re.search(parametro, dato[1], re.IGNORECASE) or re.search(parametro, dato[2], re.IGNORECASE):
                 datos.append(dato)
-        destruir_tabla()
-        return datos
+        erase_tabla()
+        load_results(datos)
 
-def ordenar_por_salida(): #odena por salida
+def ordenar_por_salida(): #ordena por salida
     datos = get_datos()
     
     n = len(datos)
@@ -180,7 +179,7 @@ def ordenar_por_salida(): #odena por salida
     return datos
     #print(datos)
 
-def ordenar_por_faltantes():
+def ordenar_por_faltantes(): #ordena por faltantes
     datos = get_datos()
     n = len(datos)
     for i in range(n-1):
@@ -191,7 +190,7 @@ def ordenar_por_faltantes():
                 datos[j], datos[j+1] = datos[j+1], datos[j]
     return datos
 
-def ordenar_df():
+def ordenar_df(): #ordena el DataFrame por faltantes
     datos =  ordenar_por_faltantes()
     dt = []
     iter = 0
@@ -211,16 +210,15 @@ def ordenar_df():
             iter = iter + 1
     return dt
 
-def exp_data():
+def exp_data(): #Exporta el la tabla stats a un excel
     datos = ordenar_df()
     indices = ["Código", "Nombre", "Cantidad", "Ingresos", "Salidas", "Estado"]
     df = pd.DataFrame(datos, columns = indices)
     with pd.ExcelWriter('Stock.xlsx') as writer:
         df.to_excel(writer, "Stock faltantes")
-    
-
-        
-def imp_data():
+    os.system('Stock.xlsx')
+          
+def imp_data(): #Importa datos de un excel
     try:
         filepath = filedialog.askopenfilename()
         df = pd.read_excel(filepath)
@@ -238,27 +236,18 @@ def imp_data():
         else:
             messagebox.showerror("Error", str(art_inc) + " articulo(s) presentan campos invalidos y no fueron insertados")
     except:
-        messagebox.showerror("Error", "Directorio o archivo inválido")
-    
-
-def print_data():
-
+        messagebox.showerror("Error", "Selecciones un directorio o archivo válido")
+   
+def print_data(): #Genera un pdf de la tabla stats
     datos = ordenar_df()
     indices = ["Código", "Nombre", "Cantidad", "Ingresos", "Salidas", "Estado"]
     df = pd.DataFrame(datos, columns = indices)
-    fig, ax = plt.subplots(figsize=(12,4))
-    ax.axis('tight')
-    ax.axis('off')
-    tab_imp = ax.table(cellText=df.values,colLabels=df.columns,loc='center')
-    tab_imp.auto_set_font_size(False)
-    tab_imp.auto_set_column_width(col = list(range(len(df.columns))))
+    html = df.to_html(index=False, columns={"Código": "20%", "Nombre": "40%", "Cantidad": "10%", "Ingresos": "10%", "Salidas": "10%", "Estado": "20%"})
+    text_file = open("Outfiles/stock.html", "w")
+    text_file.write(html)
+    text_file.close()
 
-    pp = PdfPages("stock.pdf")
-    pp.savefig(fig, bbox_inches='tight')
-    pp.close()
-    os.system('stock.pdf')
-
-
+    os.system('Outfiles/stock.html')
 
 def insert_excel(codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag):
     precio_final = float(precio_unit + (precio_unit * (porcent_ag/100)))
@@ -266,9 +255,21 @@ def insert_excel(codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag
     reload_tabla()
 
 def reload_tabla():
+    erase_tabla()
+    datos = get_datos()
+    count = 0
+    for i in range(len(datos)):
+        if count % 2 == 0:
+            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "par")
+        else:
+            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "impar")
+        count += 1
+
+def erase_tabla():
     for i in tabla.get_children():
         tabla.delete(i)
-    datos = get_datos()
+
+def load_results(datos):
     count = 0
     for i in range(len(datos)):
         if count % 2 == 0:

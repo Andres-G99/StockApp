@@ -8,7 +8,7 @@ from GUI.add_prod_window import add_prod_window
 from GUI.modif_window import modif_window
 from BBDD.connect_bbdd import *
 from Controller.app_functions import crear_tabla, selected_record
-from Controller.app_functions import add_item, remove_record, update_record, increment_record, decrement_record, buscar, destruir_tabla, selected_record, imp_data
+from Controller.app_functions import add_item, remove_record, update_record, increment_record, decrement_record, buscar, destruir_tabla, selected_record, imp_data, reload_tabla
 from GUI.stats_window import stats_window
 
 class main_window():
@@ -82,7 +82,6 @@ class main_window():
 
         root.after(1000, func = None)
         root.mainloop()
-    
 
 
     def update(self, code, name, cantidad, cantidad_min, prec_u, porc_ag):
@@ -117,7 +116,6 @@ class main_window():
             messagebox.showerror("Error","Debe seleccionar un articulo primero")
         else:
             increment_record()
-        #crear_tabla(right_frame)
     
     def del_unidad(self):
         if selected_record() == '':
@@ -127,9 +125,7 @@ class main_window():
 
     def search(self):
         result = buscar(self.barra_param.get(), self.opcion.get())
-        crear_tabla(right_frame, True, result)
 
     def deshacer_busqueda(self):
-        destruir_tabla()
-        crear_tabla(right_frame, False, None)
+        reload_tabla()
     

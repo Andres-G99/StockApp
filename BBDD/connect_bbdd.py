@@ -67,7 +67,6 @@ def modificar_unidad(id, cantidad, opt):
     dato = cursor.fetchall()
     cantidad_act = (dato[0][3])
 
-
     if opt == "inc":
         cant_inc = int(dato[0][8] + 1)
         data = cantidad, cant_inc, id
