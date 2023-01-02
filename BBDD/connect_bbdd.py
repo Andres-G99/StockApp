@@ -19,8 +19,16 @@ def create_bbdd():
             SALIDAS INTEGER(50))
         ''')
     except:
-        messagebox.showwarning("Error BBDD", "La BBDD ya existe")
+        messagebox.showwarning("Error BBDD", "Error al crear la base de datos")
 
+def check_tabla():
+    try:
+        conex = sqlite3.connect("BBDD/stockBBDD.db")
+        cursor = conex.cursor()
+        cursor.execute("SELECT * FROM STOCKITEMS")
+        conex.commit()
+    except:
+        create_bbdd()
 
 def insertar_articulo(codigo, nombre, cantidad, precio_unit, porcent_ag, precio_final, cantidad_min):
     conex = sqlite3.connect("BBDD/stockBBDD.db")

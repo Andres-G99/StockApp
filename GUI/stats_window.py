@@ -20,7 +20,7 @@ class stats_window():
         self.label_btn =  CTkLabel(self.frame_btn, text="Ordenar por: ", fg_color="#C2CEE5", height = 10, text_color="black")
         self.btn_ord1 =  CTkButton(self.frame_btn, text="Faltantes", width=100, height = 10, command=self.ord_faltantes)
         self.btn_ord2 =  CTkButton(self.frame_btn, text="Salida", width=100, height = 10, command=self.ord_salida)
-        self.btn_exp =  CTkButton(self.frame_btn, text="Exportar", width=100, height = 10, command=exp_data)
+        self.btn_exp =  CTkButton(self.frame_btn, text="Exportar a Excel", width=100, height = 10, command=exp_data)
         self.btn_print =  CTkButton(self.frame_btn, text="Imprimir", width=100, height = 10, command=print_data)
         self.label_btn.grid(row=0, column=0, pady= 2, padx = 2)
         self.btn_ord1.grid(row=0, column=1, pady= 2)

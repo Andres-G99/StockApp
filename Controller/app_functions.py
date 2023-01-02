@@ -107,9 +107,7 @@ def remove_record():
     tabla.delete(del_item_tabla)
     reload_tabla() #para que la lineas queden intercaladas
 
-
-
-    
+  
 def update_data():
     global datos
     datos = get_datos()
@@ -214,9 +212,9 @@ def exp_data(): #Exporta el la tabla stats a un excel
     datos = ordenar_df()
     indices = ["Código", "Nombre", "Cantidad", "Ingresos", "Salidas", "Estado"]
     df = pd.DataFrame(datos, columns = indices)
-    with pd.ExcelWriter('Stock.xlsx') as writer:
+    with pd.ExcelWriter('Outfiles/Stock.xlsx') as writer:
         df.to_excel(writer, "Stock faltantes")
-    os.system('Stock.xlsx')
+    os.system('Outfiles\Stock.xlsx')
           
 def imp_data(): #Importa datos de un excel
     try:
@@ -236,7 +234,7 @@ def imp_data(): #Importa datos de un excel
         else:
             messagebox.showerror("Error", str(art_inc) + " articulo(s) presentan campos invalidos y no fueron insertados")
     except:
-        messagebox.showerror("Error", "Selecciones un directorio o archivo válido")
+        messagebox.showerror("Error", "Seleccione un directorio o archivo válido")
    
 def print_data(): #Genera un pdf de la tabla stats
     datos = ordenar_df()
