@@ -14,6 +14,7 @@ from GUI.stats_window import stats_window
 class main_window():
     def __init__(self):
         root = CTk()
+        root.iconbitmap("Icon\stockapp_icono.ico")
         root.state('zoomed')
         root.title("StockApp")
         root.configure(fg_color='#b0bec5')
