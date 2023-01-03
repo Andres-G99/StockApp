@@ -14,7 +14,6 @@ from GUI.stats_window import stats_window
 class main_window():
     def __init__(self):
         root = CTk()
-        root.iconbitmap("Icon\stockapp_icono.ico")
         root.state('zoomed')
         root.title("StockApp")
         root.configure(fg_color='#b0bec5')
@@ -28,50 +27,50 @@ class main_window():
         root.minsize(height=768, width=1024)
 
         #PANEL INFERIOR
-        bottom_frame = CTkFrame(root, width=w, height=(h*0.1), border_color = ("blue"), border_width=2)
-        bottom_frame.pack(expand=True, side='bottom', fill=BOTH)
-        bottom_frame.configure(fg_color="#80d8ff")
+        self.bottom_frame = CTkFrame(root, width=w, height=(h*0.1), border_color = ("blue"), border_width=2)
+        self.bottom_frame.pack(expand=True, side='bottom', fill=BOTH)
+        self.bottom_frame.configure(fg_color="#80d8ff")
 
-        butt_modif = CTkButton(bottom_frame, text="Modificar", width=150, command=self.new_modfW)
-        butt_add_u = CTkButton(bottom_frame, text="Agregar unidad", width=150,  command=self.add_unidad)
-        butt_elim_u = CTkButton(bottom_frame, text="Eliminar unidad", width=150,  command=self.del_unidad)
-        butt_stats = CTkButton(bottom_frame, text="Ver Estadísticas", width=150,  command=self.new_stats)
-        butt_imp = CTkButton(bottom_frame, text="Importar de Excel", fg_color="green", width=150,  command=imp_data)
+        self.butt_modif = CTkButton(self.bottom_frame, text="Modificar", width=150, command=self.new_modfW)
+        self.butt_add_u = CTkButton(self.bottom_frame, text="Agregar unidad", width=150,  command=self.add_unidad)
+        self.butt_elim_u = CTkButton(self.bottom_frame, text="Eliminar unidad", width=150,  command=self.del_unidad)
+        self.butt_stats = CTkButton(self.bottom_frame, text="Ver Estadísticas", width=150,  command=self.new_stats)
+        self.butt_imp = CTkButton(self.bottom_frame, text="Importar de Excel", fg_color="green", width=150,  command=imp_data)
 
-        butt_modif.place(relx= (0.20), rely= (0.35))
-        butt_add_u.place(relx= (0.325), rely= (0.35))
-        butt_elim_u.place(relx= (0.45), rely= (0.35))
-        butt_stats.place(relx= (0.575), rely= (0.35))
-        butt_imp.place(relx= (0.7), rely= (0.35))
+        self.butt_modif.place(relx= (0.20), rely= (0.35))
+        self.butt_add_u.place(relx= (0.325), rely= (0.35))
+        self.butt_elim_u.place(relx= (0.45), rely= (0.35))
+        self.butt_stats.place(relx= (0.575), rely= (0.35))
+        self.butt_imp.place(relx= (0.7), rely= (0.35))
 
         #PANEL IZQUIERDO
-        left_frame = CTkFrame(root, width=(w*0.05), height=(h*0.8), border_color = ("lightgreen","green"), border_width=2)
-        left_frame.pack(expand=True, side='left', fill=BOTH)
-        left_frame.configure(fg_color="#a5ee9d")
+        self.left_frame = CTkFrame(root, width=(w*0.05), height=(h*0.8), border_color = ("lightgreen","green"), border_width=2)
+        self.left_frame.pack(expand=True, side='left', fill=BOTH)
+        self.left_frame.configure(fg_color="#a5ee9d")
         
 
-        butt_add_prod = CTkButton(left_frame, text="Agregar Producto", width= 200, command= self.new_addw)
+        self.butt_add_prod = CTkButton(self.left_frame, text="Agregar Producto", width= 200, command= self.new_addw)
         #butt_add_prod.place(x= (((w*0.2)/2) - 80), y= (40))  # p = x/2 - l
-        butt_add_prod.place(relx= (0.20), rely= (0.10))
+        self.butt_add_prod.place(relx= (0.20), rely= (0.10))
 
-        butt_elim_prod = CTkButton(left_frame, text="Eliminar Producto", width= 200, command=self.eliminar_registro)
+        self.butt_elim_prod = CTkButton(self.left_frame, text="Eliminar Producto", width= 200, command=self.eliminar_registro)
         # butt_elim_prod.place(x= (((w*0.2)/2) - 80), y=(100))
-        butt_elim_prod.place(relx= (0.20), rely= (0.175))
+        self.butt_elim_prod.place(relx= (0.20), rely= (0.175))
 
-        lista_param = CTkComboBox(left_frame, width= 200, values=["Todos","Por nombre", "Por código"], variable=self.opcion)
-        lista_param.set("Todos")
+        self.lista_param = CTkComboBox(self.left_frame, width= 200, values=["Todos","Por nombre", "Por código"], variable=self.opcion)
+        self.lista_param.set("Todos")
         # lista_param.place(x= (((w*0.2)/2) - 80), y=(h*0.5))
-        lista_param.place(relx= (0.20), rely= (0.6))
+        self.lista_param.place(relx= (0.20), rely= (0.6))
 
-        barra_busqueda = CTkEntry(left_frame, width=190, textvariable=self.barra_param)
+        self.barra_busqueda = CTkEntry(self.left_frame, width=190, textvariable=self.barra_param)
         # barra_busqueda.place(x= (((w*0.2)/2) - 80), y=(h*0.5 + 40))
-        barra_busqueda.place(relx= (0.20), rely= (0.65))
+        self.barra_busqueda.place(relx= (0.20), rely= (0.65))
 
-        Btn_desh = CTkButton(left_frame, text="X", width=3, command=self.deshacer_busqueda)
-        Btn_desh.place(relx= (0.75), rely= (0.65))
+        self.Btn_desh = CTkButton(self.left_frame, text="X", width=3, command=self.deshacer_busqueda)
+        self.Btn_desh.place(relx= (0.75), rely= (0.65))
 
-        butt_busqueda = CTkButton(left_frame, text="Buscar", width=200, command=self.search)
-        butt_busqueda.place(relx= (0.20), rely= (0.7))
+        self.butt_busqueda = CTkButton(self.left_frame, text="Buscar", width=200, command=self.search)
+        self.butt_busqueda.place(relx= (0.20), rely= (0.7))
 
         #PANEL DERECHO
         global right_frame
@@ -81,7 +80,6 @@ class main_window():
         right_frame.configure(fg_color="#b0bec5")
         crear_tabla(right_frame, False, None)
 
-        root.after(1000, func = None)
         root.mainloop()
 
 
@@ -130,3 +128,18 @@ class main_window():
     def deshacer_busqueda(self):
         reload_tabla()
     
+
+    def color_mk(self):
+            #PANEL IZQUIERDO
+            self.left_frame.configure(fg_color="#EF9A9A", border_color = "#EF9A9A")
+            self.butt_add_prod.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+            self.butt_elim_prod.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+            self.butt_busqueda.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+            self.Btn_desh.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+            #PANEL INFERIOR
+            self.bottom_frame.configure(fg_color="#C2185B", border_color = "#AD1457")
+            self.butt_modif.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+            self.butt_add_u.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+            self.butt_elim_u.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+            self.butt_stats.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+            self.butt_imp.configure(border_width = 2, fg_color = "#689f38", text_color = "white", hover_color = "#BDBDBD")

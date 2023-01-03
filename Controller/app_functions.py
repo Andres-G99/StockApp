@@ -6,7 +6,7 @@ from customtkinter import CTkScrollbar
 import pdfkit as pdfk
 import numpy as np
 import pandas as pd
-import os, sys
+import os, sys, operator
 import re
 
 from BBDD.connect_bbdd import *
@@ -72,18 +72,27 @@ def crear_tabla(frame, filtro, data):
     if filtro == True:
         datos = data
     else:
-        datos = get_datos()
+        datos = get_datos_fb()
     count = 0
 
     tabla.tag_configure('impar', background = "white")
     tabla.tag_configure('par', background = "lightblue")
 
-    for i in range(len(datos)):
-        if count % 2 == 0:
-            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "par")
-        else:
-            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "impar")
-        count += 1
+    # for i in range(len(datos)):
+    #     if count % 2 == 0:
+    #         tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "par")
+    #     else:
+    #         tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "impar")
+    #     count += 1
+    try:
+        for key in datos:
+            if count % 2 == 0:
+                tabla.insert(parent='', index='end', id= count, values=(key, datos.get(key).get("CODIGO"), datos.get(key).get("NOMBRE"), datos.get(key).get("CANTIDAD"), datos.get(key).get("PRECIO_UNIT"), datos.get(key).get("PORCENT_AG"), datos.get(key).get("PRECIO_FINAL"), datos.get(key).get("CANTIDAD_MIN")), tag = "par")
+            else:
+                tabla.insert(parent='', index='end', id= count, values=(key, datos.get(key).get("CODIGO"), datos.get(key).get("NOMBRE"), datos.get(key).get("CANTIDAD"), datos.get(key).get("PRECIO_UNIT"), datos.get(key).get("PORCENT_AG"), datos.get(key).get("PRECIO_FINAL"), datos.get(key).get("CANTIDAD_MIN")), tag = "impar")
+            count += 1
+    except:
+        messagebox.showinfo("Aviso", "No hay entradas")
 
     
 
@@ -144,7 +153,8 @@ def destruir_tabla():
 
 def buscar(parametro, opcion):
     datos = []
-    bbdata = get_datos()
+    bbdata = get_datos_fb()
+
     if opcion == "Por código":
         for dato in bbdata:
             if re.search(parametro, dato[1], re.IGNORECASE):
@@ -161,49 +171,85 @@ def buscar(parametro, opcion):
     
     elif opcion == "Todos":
         for dato in bbdata:
-            if re.search(parametro, dato[1], re.IGNORECASE) or re.search(parametro, dato[2], re.IGNORECASE):
+            #print(bbdata.get(dato).get("NOMBRE"))
+            codigo = bbdata.get(dato).get("CODIGO")
+            nombre = bbdata.get(dato).get("NOMBRE")
+            if re.search(parametro, codigo, re.IGNORECASE) or re.search(parametro, nombre, re.IGNORECASE):
                 datos.append(dato)
         erase_tabla()
         load_results(datos)
+    # datos = []
+    # bbdata = get_datos()
+    # if opcion == "Por código":
+    #     for dato in bbdata:
+    #         if re.search(parametro, dato[1], re.IGNORECASE):
+    #             datos.append(dato)
+    #     erase_tabla()
+    #     load_results(datos)
+
+    # elif opcion == "Por nombre":
+    #     for dato in bbdata:
+    #         if re.search(parametro, dato[2], re.IGNORECASE):
+    #             datos.append(dato)
+    #     erase_tabla()
+    #     load_results(datos)       
+    
+    # elif opcion == "Todos":
+    #     for dato in bbdata:
+    #         if re.search(parametro, dato[1], re.IGNORECASE) or re.search(parametro, dato[2], re.IGNORECASE):
+    #             datos.append(dato)
+    #     erase_tabla()
+    #     load_results(datos)
 
 def ordenar_por_salida(): #ordena por salida
-    datos = get_datos()
+    datos = get_datos_fb()
+    lista = []
+    for dato in datos:
+        lista.append(datos.get(dato))
+    data = sorted(lista, key = lambda x: x["SALIDAS"], reverse= True)
+    return data
     
-    n = len(datos)
-    for i in range(n-1):
-        for j in range(n-1-i):
-            if datos[j][9] < datos[j+1][9]:
-                datos[j], datos[j+1] = datos[j+1], datos[j]
-    return datos
+    # n = len(datos)
+    # for i in range(n-1):
+    #     for j in range(n-1-i):
+    #         if datos[j][9] < datos[j+1][9]:
+    #             datos[j], datos[j+1] = datos[j+1], datos[j]
+    # return datos
     #print(datos)
 
 def ordenar_por_faltantes(): #ordena por faltantes
-    datos = get_datos()
-    n = len(datos)
-    for i in range(n-1):
-        for j in range(n-1-i):
-            if (datos[j][7] - datos[j][3]) < (datos[j+1][7] - datos[j+1][3]):
-                datos[j], datos[j+1] = datos[j+1], datos[j]
-            if(datos[j+1][3] == 0):
-                datos[j], datos[j+1] = datos[j+1], datos[j]
-    return datos
+    datos = get_datos_fb()
+    lista = []
+    for dato in datos:
+        lista.append(datos.get(dato))
+    data = sorted(lista, key = lambda x: x["CANTIDAD"], reverse= False)
+    return data
+    # datos = get_datos()
+    # n = len(datos)
+    # for i in range(n-1):
+    #     for j in range(n-1-i):
+    #         if (datos[j][7] - datos[j][3]) < (datos[j+1][7] - datos[j+1][3]):
+    #             datos[j], datos[j+1] = datos[j+1], datos[j]
+    #         if(datos[j+1][3] == 0):
+    #             datos[j], datos[j+1] = datos[j+1], datos[j]
+    # return datos
 
 def ordenar_df(): #ordena el DataFrame por faltantes
     datos =  ordenar_por_faltantes()
     dt = []
     iter = 0
     for dato in datos:
-        if dato[3] >= dato[7]: #CANTIDAD > CANT MIN
-            datt = (dato[1], dato[2], dato[3], dato[8], dato[9], "STOCK")
+        if dato.get("CANTIDAD") >= int(dato.get("CANTIDAD_MIN")): #CANTIDAD > CANT MIN
+            datt = (dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "STOCK")
             dt.append(datt)
             iter = iter + 1
-        elif dato[3] == 0:
-            datt = (dato[1], dato[2], dato[3], dato[8], dato[9], "SIN STOCK ["+str(dato[7])+"]")
+        elif dato.get("CANTIDAD") == 0:
+            datt = (dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "SIN STOCK ["+str(dato.get("CANTIDAD_MIN"))+"]")
             dt.append(datt)
             iter = iter + 1
-        elif dato[3] < dato[7]: #CANTIDAD < CANT MIN
-            cant_rep = dato[7] - dato[3]
-            datt = (dato[1], dato[2], dato[3], dato[8], dato[9], "REPONER " + str(cant_rep))
+        elif dato.get("CANTIDAD") < int(dato.get("CANTIDAD_MIN")): #CANTIDAD < CANT MIN
+            cant_rep = int(dato.get("CANTIDAD_MIN")) - dato.get("CANTIDAD")
+            datt = (dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "REPONER " + str(cant_rep))
             dt.append(datt)
             iter = iter + 1
     return dt
@@ -254,26 +300,28 @@ def insert_excel(codigo, nombre, cantidad, cantidad_min, precio_unit, porcent_ag
 
 def reload_tabla():
     erase_tabla()
-    datos = get_datos()
+    datos = get_datos_fb()
     count = 0
-    for i in range(len(datos)):
+
+    for key in datos:
         if count % 2 == 0:
-            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "par")
+            tabla.insert(parent='', index='end', id= count, values=(key, datos.get(key).get("CODIGO"), datos.get(key).get("NOMBRE"), datos.get(key).get("CANTIDAD"), datos.get(key).get("PRECIO_UNIT"), datos.get(key).get("PORCENT_AG"), datos.get(key).get("PRECIO_FINAL"), datos.get(key).get("CANTIDAD_MIN")), tag = "par")
         else:
-            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "impar")
+            tabla.insert(parent='', index='end', id= count, values=(key, datos.get(key).get("CODIGO"), datos.get(key).get("NOMBRE"), datos.get(key).get("CANTIDAD"), datos.get(key).get("PRECIO_UNIT"), datos.get(key).get("PORCENT_AG"), datos.get(key).get("PRECIO_FINAL"), datos.get(key).get("CANTIDAD_MIN")), tag = "impar")
         count += 1
 
 def erase_tabla():
     for i in tabla.get_children():
         tabla.delete(i)
 
-def load_results(datos):
+def load_results(datos_bus):
+    datos = get_datos_fb()
     count = 0
-    for i in range(len(datos)):
+    for key in datos_bus:
         if count % 2 == 0:
-            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "par")
+            tabla.insert(parent='', index='end', id= count, values=(key, datos.get(key).get("CODIGO"), datos.get(key).get("NOMBRE"), datos.get(key).get("CANTIDAD"), datos.get(key).get("PRECIO_UNIT"), datos.get(key).get("PORCENT_AG"), datos.get(key).get("PRECIO_FINAL"), datos.get(key).get("CANTIDAD_MIN")), tag = "par")
         else:
-            tabla.insert(parent='', index='end', id= count, values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3], datos[i][4], datos[i][5], datos[i][6], datos[i][7]), tag = "impar")
+            tabla.insert(parent='', index='end', id= count, values=(key, datos.get(key).get("CODIGO"), datos.get(key).get("NOMBRE"), datos.get(key).get("CANTIDAD"), datos.get(key).get("PRECIO_UNIT"), datos.get(key).get("PORCENT_AG"), datos.get(key).get("PRECIO_FINAL"), datos.get(key).get("CANTIDAD_MIN")), tag = "impar")
         count += 1
 
 def is_int(x):

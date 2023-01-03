@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from customtkinter import *
 from Controller.app_functions import ordenar_por_salida, ordenar_por_faltantes, exp_data, print_data
+import firebase_admin
+from firebase_admin import db
 
 
 class stats_window():
@@ -44,7 +46,7 @@ class stats_window():
 
         self.tabla_stats = ttk.Treeview(frame, height=30, yscrollcommand=self.sb.set, style="mystyle.Treeview")
         self.tabla_stats.pack(padx=5, pady=5)
-        self.tabla_stats['columns'] = ('Id', 'Codigo', 'Nombre', 'Cantidad', 'Ingresos', 'Salidas', 'Estado')
+        self.tabla_stats['columns'] = ('Codigo', 'Nombre', 'Cantidad', 'Ingresos', 'Salidas', 'Estado')
         self.sb.configure(command=self.tabla_stats.yview)
 
         self.tabla_stats.tag_configure("sin_stock_par", background = "#ff8164")
@@ -57,7 +59,7 @@ class stats_window():
         self.tabla_stats.tag_configure("en_stock_impar", background = "#abf7b1")
 
         self.tabla_stats.column("#0", stretch = NO, width=1)
-        self.tabla_stats.column("Id", stretch = NO, width=1)
+        #self.tabla_stats.column("Id", stretch = NO, width=1)
         self.tabla_stats.column("Codigo", width=200, minwidth= 190)
         self.tabla_stats.column("Nombre", width=300, minwidth= 290)
         self.tabla_stats.column("Cantidad", width=170, minwidth= 160)
@@ -66,7 +68,7 @@ class stats_window():
         self.tabla_stats.column("Estado", width=170, minwidth= 160)
 
         self.tabla_stats.heading("#0", text="")
-        self.tabla_stats.heading("Id", text="Id")
+        #self.tabla_stats.heading("Id", text="Id")
         self.tabla_stats.heading("Codigo", text="Código")
         self.tabla_stats.heading("Nombre", text="Nombre")
         self.tabla_stats.heading("Cantidad", text="Cantidad")
@@ -83,33 +85,34 @@ class stats_window():
             datos = ordenar_por_faltantes()
         elif opt == "salida":
             datos = ordenar_por_salida()
+        #datos = ordenar_por_salida()
         iter = 0
         for dato in datos:
             
-            if dato[3] >= dato[7]: #CANTIDAD > CANT MIN
+            if dato.get("CANTIDAD") >= int(dato.get("CANTIDAD_MIN")): #CANTIDAD > CANT MIN
                 if iter % 2 == 0:
-                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "STOCK"), tag = "en_stock_par")
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "STOCK"), tag = "en_stock_par")
                     iter = iter + 1
                 else:
-                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "STOCK"), tag = "en_stock_impar")
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "STOCK"), tag = "en_stock_impar")
                     iter = iter + 1
 
-            elif dato[3] == 0:
+            elif dato.get("CANTIDAD") == 0:
                 if iter % 2 == 0:
-                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "SIN STOCK ["+str(dato[7])+"]"), tag = "sin_stock_par")
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "SIN STOCK ["+ str(dato.get("CANTIDAD_MIN"))+"]"), tag = "sin_stock_par")
                     iter = iter + 1
                 else:
-                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "SIN STOCK ["+str(dato[7])+"]"), tag = "sin_stock_impar")
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "SIN STOCK ["+ str(dato.get("CANTIDAD_MIN"))+"]"), tag = "sin_stock_impar")
                     iter = iter + 1
 
-            elif dato[3] < dato[7]: #CANTIDAD < CANT MIN
+            elif dato.get("CANTIDAD") < int(dato.get("CANTIDAD_MIN")): #CANTIDAD < CANT MIN
                 if iter % 2 == 0:
-                    cant_rep = dato[7] - dato[3]
-                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "REPONER " + str(cant_rep)), tag = "reponer_par")
+                    cant_rep = dato.get("CANTIDAD_MIN") - dato.get("CANTIDAD")
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "REPONER " + str(cant_rep)), tag = "reponer_par")
                     iter = iter + 1
                 else:
-                    cant_rep = dato[7] - dato[3]
-                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato[0],dato[1], dato[2], dato[3], dato[8], dato[9], "REPONER " + str(cant_rep)), tag = "reponer_impar")
+                    cant_rep = dato.get("CANTIDAD_MIN") - dato.get("CANTIDAD")
+                    self.tabla_stats.insert(parent='', index='end', id = iter, values=(dato.get("CODIGO"), dato.get("NOMBRE"), dato.get("CANTIDAD"), dato.get("INGRESOS"), dato.get("SALIDAS"), "REPONER " + str(cant_rep)), tag = "reponer_impar")
                     iter = iter + 1
 
     def reset_tabla(self, tb):
@@ -123,3 +126,14 @@ class stats_window():
     def ord_salida(self):
         self.reset_tabla(self.tb)
         self.cargar_tabla(self.tb, "salida")
+        #ordenar_por_salida()
+
+
+    def color_mk_stats(self):
+        self.frame.configure(fg_color= "pink")
+        self.frame_btn.configure(fg_color= "pink")
+        self.label_btn.configure(fg_color= "pink")
+        self.btn_ord1.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+        self.btn_ord2.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+        self.btn_print.configure(border_width = 2, fg_color = "white", text_color = "black", hover_color = "#BDBDBD")
+        self.btn_exp.configure(border_width = 2, fg_color = "#689f38", text_color = "white", hover_color = "#BDBDBD")
